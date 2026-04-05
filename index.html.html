@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OdontoIA — Nomenclatura Dental</title>
+  <!-- SheetJS para exportar Excel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --azul:      #1a3c6e;
+      --azul-claro:#2563b0;
+      --verde:     #16a34a;
+      --rojo:      #dc2626;
+      --amarillo:  #d97706;
+      --gris-bg:   #f1f5f9;
+      --gris-borde:#cbd5e1;
+      --texto:     #1e293b;
+      --texto-sub: #64748b;
+      --blanco:    #ffffff;
+      --radio:     14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--gris-bg);
+      color: var(--texto);
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .logo { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--azul); text-align: center; margin-bottom: 6px; }
+    .logo span { color: var(--azul-claro); }
+    .subtitulo { text-align: center; color: var(--texto-sub); font-size: 0.9rem; margin-bottom: 28px; }
+
+    /* CARD */
+    .card { background: var(--blanco); border-radius: var(--radio); padding: 32px; width: 100%; max-width: 560px; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
+
+    /* LOGIN */
+    #pantalla-login h2 { font-size: 1.15rem; margin-bottom: 22px; color: var(--azul); }
+    .campo { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .campo label { font-size: 0.8rem; font-weight: 600; color: var(--texto-sub); text-transform: uppercase; letter-spacing: .05em; }
+    .campo input { border: 1.5px solid var(--gris-borde); border-radius: 8px; padding: 12px 14px; font-size: 0.95rem; font-family: inherit; outline: none; transition: border .2s; }
+    .campo input:focus { border-color: var(--azul-claro); }
+    .error-msg { color: var(--rojo); font-size: 0.85rem; margin-bottom: 12px; display: none; }
+
+    /* BOTONES */
+    .btn-primary { width: 100%; background: var(--azul); color: #fff; border: none; border-radius: 8px; padding: 14px; font-size: 1rem; font-family: inherit; font-weight: 600; cursor: pointer; transition: background .2s, transform .1s; }
+    .btn-primary:hover  { background: var(--azul-claro); }
+    .btn-primary:active { transform: scale(.98); }
+    .btn-secondary { background: none; border: 2px solid var(--azul); color: var(--azul); border-radius: 8px; padding: 10px 20px; font-size: 0.9rem; font-family: inherit; font-weight: 600; cursor: pointer; transition: background .2s, color .2s; }
+    .btn-secondary:hover { background: var(--azul); color: #fff; }
+    .btn-verde { background: var(--verde); color: #fff; border: none; border-radius: 8px; padding: 12px 20px; font-size: 0.9rem; font-family: inherit; font-weight: 600; cursor: pointer; transition: background .2s; }
+    .btn-verde:hover { background: #15803d; }
+
+    /* HEADER EJERCICIO */
+    .ej-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .ej-header .usuario-chip { display: flex; align-items: center; gap: 6px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 99px; padding: 4px 12px; font-size: 0.8rem; font-weight: 600; color: var(--azul-claro); }
+    .btn-salir { background: none; border: none; color: var(--texto-sub); font-size: 0.8rem; cursor: pointer; text-decoration: underline; font-family: inherit; }
+    .btn-salir:hover { color: var(--rojo); }
+
+    /* TIMER */
+    .timer-badge { text-align: right; font-size: 0.78rem; color: var(--texto-sub); margin-bottom: 14px; }
+    .timer-badge span { font-weight: 700; color: var(--azul); }
+
+    /* PROGRESO */
+    .progreso-wrap { margin-bottom: 18px; }
+    .progreso-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--texto-sub); margin-bottom: 6px; }
+    .barra-fondo { background: var(--gris-bg); border-radius: 99px; height: 7px; overflow: hidden; }
+    .barra-relleno { background: var(--azul-claro); height: 100%; border-radius: 99px; transition: width .4s ease; }
+
+    /* TAG SISTEMA */
+    .tag-sistema { display: inline-block; background: #eff6ff; color: var(--azul-claro); border: 1px solid #bfdbfe; border-radius: 99px; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: .04em; }
+
+    .enunciado { font-size: 1rem; font-weight: 500; line-height: 1.55; margin-bottom: 18px; }
+
+    /* IMAGEN */
+    .img-wrap { background: var(--gris-bg); border: 1.5px solid var(--gris-borde); border-radius: 10px; overflow: hidden; margin-bottom: 20px; min-height: 200px; display: flex; align-items: center; justify-content: center; }
+    .img-wrap img { max-width: 100%; max-height: 280px; object-fit: contain; display: block; }
+
+    /* ALTERNATIVAS */
+    .alternativas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+    .alt-btn { background: var(--blanco); border: 2px solid var(--gris-borde); border-radius: 10px; padding: 14px 10px; font-size: 1rem; font-family: inherit; font-weight: 600; color: var(--texto); cursor: pointer; transition: border .15s, background .15s, transform .1s; }
+    .alt-btn:hover:not(:disabled) { border-color: var(--azul-claro); background: #eff6ff; transform: translateY(-1px); }
+    .alt-btn:disabled { cursor: not-allowed; }
+    .alt-btn.correcta  { border-color: var(--verde); background: #dcfce7; color: var(--verde); }
+    .alt-btn.incorrecta{ border-color: var(--rojo);  background: #fee2e2; color: var(--rojo); }
+
+    /* FEEDBACK */
+    .feedback { border-radius: 10px; padding: 14px 16px; font-size: 0.9rem; line-height: 1.55; margin-bottom: 18px; display: none; animation: fadeIn .25s ease; }
+    .feedback.correcto  { background: #dcfce7; border-left: 4px solid var(--verde); color: #166534; }
+    .feedback.incorrecto{ background: #fee2e2; border-left: 4px solid var(--rojo);  color: #991b1b; }
+    .feedback-titulo    { font-weight: 700; margin-bottom: 4px; }
+
+    /* RESULTADOS */
+    #pantalla-resultados { text-align: center; }
+    .res-icono  { font-size: 3.5rem; margin-bottom: 12px; }
+    .res-titulo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--azul); margin-bottom: 6px; }
+    .res-puntaje { font-size: 2.8rem; font-weight: 700; color: var(--azul-claro); margin: 14px 0 6px; }
+    .res-puntaje span { font-size: 1.1rem; color: var(--texto-sub); font-weight: 400; }
+    .res-tiempo { font-size: 0.85rem; color: var(--texto-sub); margin-bottom: 16px; }
+
+    .detalle-wrap { text-align: left; margin: 18px 0; border-top: 1px solid var(--gris-borde); padding-top: 16px; }
+    .detalle-titulo { font-size: 0.8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--texto-sub); margin-bottom: 12px; }
+    .item-resultado { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--gris-bg); font-size: 0.88rem; }
+    .badge { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; flex-shrink: 0; margin-top: 1px; }
+    .badge.ok  { background: #dcfce7; color: var(--verde); }
+    .badge.mal { background: #fee2e2; color: var(--rojo); }
+
+    .acciones-resultado { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+    .acciones-resultado button { flex: 1; min-width: 140px; }
+
+    /* PANEL ADMIN */
+    #pantalla-admin { max-width: 700px; }
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .admin-header h2 { font-size: 1.2rem; color: var(--azul); }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+    .stat-box { background: var(--gris-bg); border-radius: 10px; padding: 14px; text-align: center; }
+    .stat-num  { font-size: 1.8rem; font-weight: 700; color: var(--azul-claro); }
+    .stat-lbl  { font-size: 0.75rem; color: var(--texto-sub); margin-top: 2px; }
+
+    .tabla-wrap { overflow-x: auto; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    th { background: var(--azul); color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; font-size: 0.78rem; letter-spacing: .03em; }
+    td { padding: 8px 12px; border-bottom: 1px solid var(--gris-bg); }
+    tr:hover td { background: #f8fafc; }
+    .pill { display: inline-block; border-radius: 99px; padding: 2px 8px; font-size: 0.75rem; font-weight: 600; }
+    .pill-verde    { background: #dcfce7; color: var(--verde); }
+    .pill-rojo     { background: #fee2e2; color: var(--rojo); }
+    .pill-amarillo { background: #fef3c7; color: var(--amarillo); }
+
+    .udd-badge { margin-top: 20px; font-size: 0.75rem; color: var(--texto-sub); text-align: center; }
+
+    .pantalla        { display: none; }
+    .pantalla.activa { display: block; }
+
+    @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+  </style>
+</head>
+<body>
+
+<div class="logo">Odonto<span>IA</span></div>
+<p class="subtitulo">Ejercicios de nomenclatura dental · UDD Concepción</p>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div class="card pantalla activa" id="pantalla-login">
+  <h2>Ingresa tus datos para comenzar</h2>
+  <div class="campo">
+    <label>Usuario</label>
+    <input type="text" id="input-usuario" placeholder="Tu nombre de usuario"
+           onkeydown="if(event.key==='Enter') document.getElementById('input-pass').focus()">
+  </div>
+  <div class="campo">
+    <label>Contraseña</label>
+    <input type="password" id="input-pass" placeholder="Contraseña"
+           onkeydown="if(event.key==='Enter') iniciarSesion()">
+  </div>
+  <p class="error-msg" id="error-login"></p>
+  <button class="btn-primary" onclick="iniciarSesion()">Entrar →</button>
+</div>
+
+<!-- ══════════ EJERCICIO ══════════ -->
+<div class="card pantalla" id="pantalla-ejercicio">
+  <div class="ej-header">
+    <div class="usuario-chip">👤 <span id="chip-usuario"></span></div>
+    <button class="btn-salir" onclick="salir()">Salir</button>
+  </div>
+  <div class="timer-badge">Tiempo en sesión: <span id="timer-display">00:00</span></div>
+
+  <div class="progreso-wrap">
+    <div class="progreso-label">
+      <span id="lbl-pregunta">Pregunta 1 de 2</span>
+      <span id="lbl-score">0 correctas</span>
+    </div>
+    <div class="barra-fondo"><div class="barra-relleno" id="barra" style="width:0%"></div></div>
+  </div>
+
+  <div class="tag-sistema" id="tag-sistema">FDI</div>
+  <p class="enunciado" id="enunciado"></p>
+  <div class="img-wrap" id="img-wrap"></div>
+  <div class="alternativas" id="alternativas"></div>
+
+  <div class="feedback" id="feedback">
+    <div class="feedback-titulo" id="feedback-titulo"></div>
+    <div id="feedback-texto"></div>
+  </div>
+
+  <button class="btn-primary" id="btn-siguiente" style="display:none" onclick="siguienteEjercicio()">
+    Siguiente pregunta →
+  </button>
+</div>
+
+<!-- ══════════ RESULTADOS ══════════ -->
+<div class="card pantalla" id="pantalla-resultados">
+  <div class="res-icono" id="res-icono">🦷</div>
+  <div class="res-titulo" id="res-titulo">¡Sesión completada!</div>
+  <p style="color:var(--texto-sub);font-size:.9rem;margin-top:4px" id="res-alumno"></p>
+  <div class="res-puntaje" id="res-puntaje">0 <span>/ 0 correctas</span></div>
+  <div class="res-tiempo" id="res-tiempo">⏱ Tiempo del intento: —</div>
+
+  <div class="detalle-wrap">
+    <div class="detalle-titulo">Detalle de respuestas</div>
+    <div id="lista-detalle"></div>
+  </div>
+
+  <div class="acciones-resultado">
+    <button class="btn-secondary" onclick="reiniciar()">↺ Intentar de nuevo</button>
+    <button class="btn-primary"   onclick="salir()">Cerrar sesión</button>
+  </div>
+</div>
+
+<!-- ══════════ PANEL ADMIN ══════════ -->
+<div class="card pantalla" id="pantalla-admin">
+  <div class="admin-header">
+    <h2>📊 Panel de trazabilidad</h2>
+    <button class="btn-salir" onclick="salir()">Salir</button>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-box"><div class="stat-num" id="stat-sesiones">0</div><div class="stat-lbl">Inicios de sesión</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-intentos">0</div><div class="stat-lbl">Intentos totales</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-tiempo">0 min</div><div class="stat-lbl">Tiempo total</div></div>
+  </div>
+
+  <div class="tabla-wrap">
+    <table id="tabla-registros">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Fecha</th>
+          <th>Inicio</th>
+          <th>Duración</th>
+          <th>Intento #</th>
+          <th>Correctas</th>
+          <th>Incorrectas</th>
+          <th>%</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-body"></tbody>
+    </table>
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn-verde" onclick="exportarExcel()">⬇ Exportar Excel</button>
+    <button class="btn-secondary" onclick="limpiarDatos()" style="border-color:var(--rojo);color:var(--rojo)">🗑 Limpiar registros</button>
+  </div>
+</div>
+
+<p class="udd-badge">Imágenes obtenidas de sitios web públicos · Universidad del Desarrollo</p>
+
+<script>
+/* ══════════════════════════════════════════
+   USUARIOS
+   Para agregar más: { usuario, password, rol }
+   rol: "alumno" | "admin"
+   ══════════════════════════════════════════ */
+const USUARIOS = [
+  { usuario: "vidiazs",  password: "UDD2026", rol: "admin"  },
+  // Aquí irán los alumnos:
+  // { usuario: "alumno1", password: "UDD2026", rol: "alumno" },
+];
+
+/* ══════════════════════════════════════════
+   BANCO DE EJERCICIOS
+   ══════════════════════════════════════════ */
+const ejercicios = [
+  {
+    sistema:      "FDI",
+    enunciado:    "Observa el diente señalado con la flecha. ¿Cuál es su número según la nomenclatura FDI?",
+    imagen:       null,
+    alternativas: ["16", "26", "14", "46"],
+    correcta:     "16",
+    fb_correcto:   "¡Correcto! El diente 16 corresponde al primer molar superior derecho. En FDI el cuadrante superior derecho usa el prefijo 1, y los molares se numeran del 4 al 8 desde el centro hacia distal.",
+    fb_incorrecto: "Incorrecto. La respuesta correcta es el 16 (primer molar superior derecho). En FDI el cuadrante superior derecho usa prefijo 1 y los molares comienzan en el 4 desde el centro."
+  },
+  {
+    sistema:      "ADA",
+    enunciado:    "Usando el sistema de nomenclatura ADA (Universal), ¿qué número corresponde al incisivo central superior derecho señalado?",
+    imagen:       null,
+    alternativas: ["8", "9", "7", "10"],
+    correcta:     "8",
+    fb_correcto:   "¡Correcto! En ADA la numeración va del 1 al 32 comenzando en el tercer molar superior derecho en sentido horario. El incisivo central superior derecho es el número 8.",
+    fb_incorrecto: "Incorrecto. La respuesta correcta es el 8. En ADA se numera del 1 al 32 comenzando en el tercer molar superior derecho, avanzando en sentido horario."
+  }
+];
+
+/* ══════════════════════════════════════════
+   ESTADO
+   ══════════════════════════════════════════ */
+let usuarioActual  = null;
+let rolActual      = "";
+let indice         = 0;
+let puntaje        = 0;
+let historial      = [];
+let respondido     = false;
+
+// Trazabilidad
+let sesionInicio   = null;   // timestamp inicio de sesión
+let intentoInicio  = null;   // timestamp inicio de intento
+let intentoNum     = 0;      // contador de intentos en esta sesión
+let timerInterval  = null;   // interval del reloj
+
+const STORAGE_KEY = "odontoia_registros";
+
+/* ══════════════════════════════════════════
+   SVG PLACEHOLDER
+   ══════════════════════════════════════════ */
+function svgPlaceholder(ej) {
+  const esFDI = ej.sistema === "FDI";
+  const fx = esFDI ? 268 : 190, fy = esFDI ? 50 : 45;
+  const tx = esFDI ? 251 : 186, ty = esFDI ? 72 : 68;
+  return `<svg style="width:100%;padding:16px" viewBox="0 0 340 190" xmlns="http://www.w3.org/2000/svg">
+    <text x="170" y="18" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">
+      Imagen placeholder — se reemplazará con foto real
+    </text>
+    <path d="M 55 100 Q 170 28 285 100" fill="none" stroke="#94a3b8" stroke-width="2"/>
+    <path d="M 55 112 Q 170 182 285 112" fill="none" stroke="#94a3b8" stroke-width="2"/>
+    ${Array.from({length:8},(_,i)=>{
+      const x=76+i*28, r=(esFDI&&i===7)||(!esFDI&&i===3);
+      return `<rect x="${x-10}" y="70" width="20" height="28" rx="5"
+        fill="${r?'#bfdbfe':'#e2e8f0'}" stroke="${r?'#2563b0':'#94a3b8'}"
+        stroke-width="${r?2.5:1}"/>`;
+    }).join('')}
+    ${Array.from({length:8},(_,i)=>{
+      const x=76+i*28;
+      return `<rect x="${x-10}" y="104" width="20" height="28" rx="5" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1"/>`;
+    }).join('')}
+    <defs><marker id="punta" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#1a3c6e"/>
+    </marker></defs>
+    <line x1="${fx}" y1="${fy}" x2="${tx}" y2="${ty}"
+          stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round" marker-end="url(#punta)"/>
+    <text x="${fx+8}" y="${fy-3}" font-family="DM Sans" font-size="12" font-weight="700" fill="#1a3c6e">¿?</text>
+  </svg>`;
+}
+
+/* ══════════════════════════════════════════
+   NAVEGACIÓN
+   ══════════════════════════════════════════ */
+function mostrarPantalla(id) {
+  document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+  document.getElementById(id).classList.add('activa');
+}
+
+/* ══════════════════════════════════════════
+   TIMER DE SESIÓN
+   ══════════════════════════════════════════ */
+function iniciarTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    const segs = Math.floor((Date.now() - sesionInicio) / 1000);
+    const m = String(Math.floor(segs / 60)).padStart(2, '0');
+    const s = String(segs % 60).padStart(2, '0');
+    const el = document.getElementById('timer-display');
+    if (el) el.textContent = `${m}:${s}`;
+  }, 1000);
+}
+
+function detenerTimer() {
+  clearInterval(timerInterval);
+}
+
+function duracionFormateada(ms) {
+  const segs = Math.floor(ms / 1000);
+  const m = Math.floor(segs / 60), s = segs % 60;
+  return `${m}m ${s}s`;
+}
+
+/* ══════════════════════════════════════════
+   LOGIN
+   ══════════════════════════════════════════ */
+function iniciarSesion() {
+  const inputUsr  = document.getElementById('input-usuario').value.trim();
+  const inputPass = document.getElementById('input-pass').value.trim();
+  const errEl     = document.getElementById('error-login');
+
+  const encontrado = USUARIOS.find(
+    u => u.usuario === inputUsr && u.password === inputPass
+  );
+
+  if (!encontrado) {
+    errEl.textContent   = "Usuario o contraseña incorrectos.";
+    errEl.style.display = "block";
+    return;
+  }
+
+  errEl.style.display = "none";
+  usuarioActual = encontrado.usuario;
+  rolActual     = encontrado.rol;
+  sesionInicio  = Date.now();
+  intentoNum    = 0;
+
+  // Registrar inicio de sesión
+  guardarRegistro({
+    tipo:      "sesion",
+    usuario:   usuarioActual,
+    fecha:     fechaHoy(),
+    hora:      horaActual(),
+    evento:    "Inicio de sesión"
+  });
+
+  if (rolActual === "admin") {
+    mostrarAdmin();
+  } else {
+    iniciarIntento();
+  }
+}
+
+/* ══════════════════════════════════════════
+   INICIAR INTENTO (quiz completo)
+   ══════════════════════════════════════════ */
+function iniciarIntento() {
+  indice        = 0;
+  puntaje       = 0;
+  historial     = [];
+  intentoNum++;
+  intentoInicio = Date.now();
+
+  document.getElementById('chip-usuario').textContent = usuarioActual;
+  iniciarTimer();
+  mostrarPantalla('pantalla-ejercicio');
+  renderEjercicio();
+}
+
+/* ══════════════════════════════════════════
+   RENDERIZAR EJERCICIO
+   ══════════════════════════════════════════ */
+function renderEjercicio() {
+  respondido = false;
+  const ej = ejercicios[indice], total = ejercicios.length;
+
+  document.getElementById('lbl-pregunta').textContent = `Pregunta ${indice+1} de ${total}`;
+  document.getElementById('lbl-score').textContent    = `${puntaje} correcta${puntaje!==1?'s':''}`;
+  document.getElementById('barra').style.width        = `${(indice/total)*100}%`;
+  document.getElementById('tag-sistema').textContent  = ej.sistema;
+  document.getElementById('enunciado').textContent    = ej.enunciado;
+
+  const imgWrap = document.getElementById('img-wrap');
+  imgWrap.innerHTML = ej.imagen
+    ? `<img src="${ej.imagen}" alt="Imagen ejercicio">`
+    : svgPlaceholder(ej);
+
+  const divAlt = document.getElementById('alternativas');
+  divAlt.innerHTML = '';
+  [...ej.alternativas].sort(()=>Math.random()-.5).forEach(alt => {
+    const btn = document.createElement('button');
+    btn.className = 'alt-btn';
+    btn.textContent = alt;
+    btn.onclick = () => responder(alt, btn, ej);
+    divAlt.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback'; fb.style.display = 'none';
+  document.getElementById('btn-siguiente').style.display = 'none';
+}
+
+/* ══════════════════════════════════════════
+   RESPONDER
+   ══════════════════════════════════════════ */
+function responder(seleccion, botonPresionado, ej) {
+  if (respondido) return;
+  respondido = true;
+  const esCorrecta = seleccion === ej.correcta;
+  if (esCorrecta) puntaje++;
+
+  document.getElementById('lbl-score').textContent =
+    `${puntaje} correcta${puntaje!==1?'s':''}`;
+
+  document.querySelectorAll('.alt-btn').forEach(btn => {
+    btn.disabled = true;
+    if (btn.textContent === ej.correcta) btn.classList.add('correcta');
+    if (btn === botonPresionado && !esCorrecta) btn.classList.add('incorrecta');
+  });
+
+  historial.push({
+    pregunta:  `Pregunta ${indice+1} (${ej.sistema})`,
+    seleccion,
+    correcta:  ej.correcta,
+    ok:        esCorrecta
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.className     = `feedback ${esCorrecta?'correcto':'incorrecto'}`;
+  fb.style.display = 'block';
+  document.getElementById('feedback-titulo').textContent =
+    esCorrecta ? '✓ ¡Correcto!' : '✗ Incorrecto';
+  document.getElementById('feedback-texto').textContent =
+    esCorrecta ? ej.fb_correcto : ej.fb_incorrecto;
+
+  const btnSig = document.getElementById('btn-siguiente');
+  btnSig.style.display = 'block';
+  btnSig.textContent   = indice+1 < ejercicios.length
+    ? 'Siguiente pregunta →' : 'Ver mis resultados →';
+}
+
+/* ══════════════════════════════════════════
+   SIGUIENTE / RESULTADOS
+   ══════════════════════════════════════════ */
+function siguienteEjercicio() {
+  indice++;
+  indice < ejercicios.length ? renderEjercicio() : mostrarResultados();
+}
+
+function mostrarResultados() {
+  detenerTimer();
+
+  const total      = ejercicios.length;
+  const incorrectas = total - puntaje;
+  const pct        = Math.round((puntaje/total)*100);
+  const durMs      = Date.now() - intentoInicio;
+  const durMin     = Math.round(durMs / 60000 * 10) / 10; // 1 decimal
+
+  // Guardar registro del intento
+  guardarRegistro({
+    tipo:       "intento",
+    usuario:    usuarioActual,
+    fecha:      fechaHoy(),
+    hora:       horaActual(intentoInicio),
+    intento:    intentoNum,
+    correctas:  puntaje,
+    incorrectas,
+    total,
+    porcentaje: pct,
+    duracion:   duracionFormateada(durMs),
+    duracion_min: durMin
+  });
+
+  // UI resultados
+  document.getElementById('res-icono').textContent  = pct>=80?"🏆":pct>=50?"💪":"📚";
+  document.getElementById('res-titulo').textContent = pct>=80?"¡Excelente trabajo!":pct>=50?"¡Buen intento, sigue practicando!":"Sigue practicando, ¡vas a lograrlo!";
+  document.getElementById('res-alumno').textContent = usuarioActual;
+  document.getElementById('res-puntaje').innerHTML  =
+    `${puntaje} <span>/ ${total} correcta${total!==1?'s':''} (${pct}%)</span>`;
+  document.getElementById('res-tiempo').textContent =
+    `⏱ Tiempo del intento: ${duracionFormateada(durMs)}`;
+
+  const lista = document.getElementById('lista-detalle');
+  lista.innerHTML = '';
+  historial.forEach((h,i) => {
+    const div = document.createElement('div');
+    div.className = 'item-resultado';
+    div.innerHTML = `
+      <div class="badge ${h.ok?'ok':'mal'}">${h.ok?'✓':'✗'}</div>
+      <div>
+        <div style="font-weight:600">${h.pregunta}</div>
+        <div style="color:var(--texto-sub);font-size:.82rem;margin-top:2px">
+          Tu respuesta: <strong>${h.seleccion}</strong>
+          ${!h.ok?` · Correcta: <strong>${h.correcta}</strong>`:''}
+        </div>
+      </div>`;
+    lista.appendChild(div);
+  });
+
+  mostrarPantalla('pantalla-resultados');
+  // Reiniciar timer para la sesión (sigue corriendo si vuelven a intentar)
+  iniciarTimer();
+}
+
+/* ══════════════════════════════════════════
+   REINICIAR INTENTO
+   ══════════════════════════════════════════ */
+function reiniciar() {
+  iniciarIntento();
+}
+
+/* ══════════════════════════════════════════
+   SALIR
+   ══════════════════════════════════════════ */
+function salir() {
+  // Registrar cierre de sesión con tiempo total
+  const durTotal = Date.now() - sesionInicio;
+  guardarRegistro({
+    tipo:    "sesion",
+    usuario: usuarioActual,
+    fecha:   fechaHoy(),
+    hora:    horaActual(),
+    evento:  "Cierre de sesión",
+    duracion_sesion: duracionFormateada(durTotal),
+    duracion_min:    Math.round(durTotal/60000*10)/10
+  });
+
+  detenerTimer();
+  usuarioActual = null;
+  document.getElementById('input-usuario').value = '';
+  document.getElementById('input-pass').value    = '';
+  mostrarPantalla('pantalla-login');
+}
+
+/* ══════════════════════════════════════════
+   PANEL ADMIN
+   ══════════════════════════════════════════ */
+function mostrarAdmin() {
+  const registros = obtenerRegistros();
+  const intentos  = registros.filter(r => r.tipo === "intento");
+  const sesiones  = registros.filter(r => r.tipo === "sesion" && r.evento === "Inicio de sesión");
+  const tiempoTotal = registros
+    .filter(r => r.tipo === "sesion" && r.evento === "Cierre de sesión")
+    .reduce((acc, r) => acc + (r.duracion_min || 0), 0);
+
+  document.getElementById('stat-sesiones').textContent = sesiones.length;
+  document.getElementById('stat-intentos').textContent = intentos.length;
+  document.getElementById('stat-tiempo').textContent   = `${Math.round(tiempoTotal)} min`;
+
+  // Tabla: solo mostrar intentos
+  const tbody = document.getElementById('tabla-body');
+  tbody.innerHTML = '';
+
+  if (intentos.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--texto-sub);padding:20px">Sin registros aún</td></tr>`;
+  } else {
+    intentos.slice().reverse().forEach(r => {
+      const pct = r.porcentaje || 0;
+      const pillCls = pct >= 80 ? 'pill-verde' : pct >= 50 ? 'pill-amarillo' : 'pill-rojo';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${r.usuario}</strong></td>
+        <td>${r.fecha}</td>
+        <td>${r.hora}</td>
+        <td>${r.duracion}</td>
+        <td style="text-align:center">${r.intento}</td>
+        <td style="text-align:center"><span class="pill pill-verde">${r.correctas}</span></td>
+        <td style="text-align:center"><span class="pill pill-rojo">${r.incorrectas}</span></td>
+        <td><span class="pill ${pillCls}">${pct}%</span></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  mostrarPantalla('pantalla-admin');
+}
+
+/* ══════════════════════════════════════════
+   EXPORTAR EXCEL
+   ══════════════════════════════════════════ */
+function exportarExcel() {
+  const registros = obtenerRegistros();
+  const intentos  = registros.filter(r => r.tipo === "intento");
+  const sesiones  = registros.filter(r => r.tipo === "sesion");
+
+  // Hoja 1: Intentos
+  const filasIntentos = intentos.map(r => ({
+    "Usuario":       r.usuario,
+    "Fecha":         r.fecha,
+    "Hora inicio":   r.hora,
+    "Duración":      r.duracion,
+    "Intento #":     r.intento,
+    "Correctas":     r.correctas,
+    "Incorrectas":   r.incorrectas,
+    "Total preguntas": r.total,
+    "Porcentaje (%)":  r.porcentaje
+  }));
+
+  // Hoja 2: Sesiones
+  const filasSesiones = sesiones.map(r => ({
+    "Usuario":  r.usuario,
+    "Fecha":    r.fecha,
+    "Hora":     r.hora,
+    "Evento":   r.evento,
+    "Duración sesión": r.duracion_sesion || "—",
+    "Minutos":  r.duracion_min || "—"
+  }));
+
+  const wb = XLSX.utils.book_new();
+
+  const ws1 = XLSX.utils.json_to_sheet(
+    filasIntentos.length ? filasIntentos : [{ "Mensaje": "Sin registros" }]
+  );
+  const ws2 = XLSX.utils.json_to_sheet(
+    filasSesiones.length ? filasSesiones : [{ "Mensaje": "Sin registros" }]
+  );
+
+  // Ancho de columnas
+  ws1['!cols'] = [12,12,12,10,10,10,10,14,14].map(w => ({ wch: w }));
+  ws2['!cols'] = [14,12,10,18,16,10].map(w => ({ wch: w }));
+
+  XLSX.utils.book_append_sheet(wb, ws1, "Intentos");
+  XLSX.utils.book_append_sheet(wb, ws2, "Sesiones");
+
+  const fecha = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, `OdontoIA_trazabilidad_${fecha}.xlsx`);
+}
+
+/* ══════════════════════════════════════════
+   STORAGE
+   ══════════════════════════════════════════ */
+function obtenerRegistros() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  } catch(e) { return []; }
+}
+
+function guardarRegistro(obj) {
+  try {
+    const datos = obtenerRegistros();
+    datos.push(obj);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+  } catch(e) { console.warn("No se pudo guardar registro:", e); }
+}
+
+function limpiarDatos() {
+  if (confirm("¿Seguro que quieres borrar TODOS los registros? Esta acción no se puede deshacer.")) {
+    localStorage.removeItem(STORAGE_KEY);
+    mostrarAdmin();
+  }
+}
+
+/* ══════════════════════════════════════════
+   HELPERS DE FECHA Y HORA
+   ══════════════════════════════════════════ */
+function fechaHoy() {
+  return new Date().toLocaleDateString('es-CL');
+}
+
+function horaActual(ts) {
+  return new Date(ts || Date.now()).toLocaleTimeString('es-CL', {
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  });
+}
+</script>
+</body>
+</html>
