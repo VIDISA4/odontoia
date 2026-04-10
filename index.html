@@ -71,7 +71,6 @@
     .btn-primary:hover  { background: var(--azul-claro); }
     .btn-primary:active { transform: scale(.98); }
     .btn-primary:disabled { background: var(--gris-borde); cursor: not-allowed; }
-
     .btn-secondary { width: 100%; background: none; border: 2px solid var(--azul); color: var(--azul); border-radius: 8px; padding: 12px; font-size: 0.95rem; font-family: inherit; font-weight: 600; cursor: pointer; transition: background .2s, color .2s; }
     .btn-secondary:hover { background: var(--azul); color: #fff; }
 
@@ -93,7 +92,7 @@
 
     /* IMAGEN */
     .img-wrap { background: var(--gris-bg); border: 1.5px solid var(--gris-borde); border-radius: 10px; overflow: hidden; margin-bottom: 20px; min-height: 200px; display: flex; align-items: center; justify-content: center; }
-    .img-wrap img { max-width: 100%; max-height: 280px; object-fit: contain; display: block; }
+    .img-wrap img { max-width: 100%; max-height: 300px; object-fit: contain; display: block; }
 
     /* ALTERNATIVAS */
     .alternativas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
@@ -164,7 +163,7 @@
     </div>
     <div class="progreso-wrap">
       <div class="progreso-label">
-        <span id="lbl-pregunta">Pregunta 1 de 2</span>
+        <span id="lbl-pregunta">Pregunta 1 de 3</span>
         <span id="lbl-score">0 correctas</span>
       </div>
       <div class="barra-fondo">
@@ -207,44 +206,44 @@
 
 <script>
 /* ══════════════════════════════════════════════════
-   EJERCICIOS
-   ──────────────────────────────────────────────────
-   Agregar aquí los ejercicios de Pía con este formato:
-   {
-     sistema:      "FDI" | "ADA" | "SUPERFICIE",
-     enunciado:    "texto de la pregunta",
-     imagen:       "URL" o null,
-     alternativas: ["op1","op2","op3","op4"],
-     correcta:     "op1",
-     fb_correcto:   "texto si acierta (escrito por Pía)",
-     fb_incorrecto: "texto si falla  (escrito por Pía)"
-   }
+   EJERCICIOS — proporcionados por Pía Moreno y Carol Senn
    ══════════════════════════════════════════════════ */
+const BASE_IMG = "https://raw.githubusercontent.com/VIDISA4/odontoia/main/";
+
 const ejercicios = [
   {
     sistema:      "FDI",
-    enunciado:    "Observa el diente señalado con la flecha. ¿Cuál es su número según la nomenclatura FDI?",
-    imagen:       null,
-    alternativas: ["16", "26", "14", "46"],
-    correcta:     "16",
-    fb_correcto:   "¡Correcto! El diente 16 corresponde al primer molar superior derecho. En FDI el cuadrante superior derecho usa el prefijo 1, y los molares se numeran del 4 al 8 desde el centro hacia distal.",
-    fb_incorrecto: "Incorrecto. La respuesta correcta es el 16 (primer molar superior derecho). En FDI el cuadrante superior derecho usa prefijo 1 y los molares comienzan en el 4 desde el centro."
+    enunciado:    "Observe la imagen. Seleccione la alternativa que corresponde al diente señalado con la flecha, según el sistema de nomenclatura FDI.",
+    imagen:       BASE_IMG + "Ejercicio%201.png",
+    alternativas: ["2.4", "1.4", "3.5", "3.4"],
+    correcta:     "2.4",
+    fb_correcto:   "¡Correcto! El diente señalado corresponde al 2.4 según la nomenclatura FDI. Este es el primer premolar del cuadrante superior izquierdo. En FDI el cuadrante 2 corresponde al maxilar superior izquierdo, y el dígito 4 indica el primer premolar.",
+    fb_incorrecto: "Incorrecto. La respuesta correcta es 2.4. Este diente corresponde al primer premolar del cuadrante superior izquierdo. Recuerda que en FDI el cuadrante 2 es el maxilar superior izquierdo, y el número 4 indica el primer premolar."
   },
   {
-    sistema:      "ADA",
-    enunciado:    "Usando el sistema de nomenclatura ADA (Universal), ¿qué número corresponde al incisivo central superior derecho señalado?",
-    imagen:       null,
-    alternativas: ["8", "9", "7", "10"],
-    correcta:     "8",
-    fb_correcto:   "¡Correcto! En ADA la numeración va del 1 al 32 comenzando en el tercer molar superior derecho en sentido horario. El incisivo central superior derecho es el número 8.",
-    fb_incorrecto: "Incorrecto. La respuesta correcta es el 8. En ADA se numera del 1 al 32 comenzando en el tercer molar superior derecho, avanzando en sentido horario."
+    sistema:      "FDI",
+    enunciado:    "Observe la imagen. Seleccione la alternativa que corresponde al diente señalado con la flecha, según el sistema de nomenclatura FDI.",
+    imagen:       BASE_IMG + "Ejercicio%202.png",
+    alternativas: ["3.2", "1.2", "2.1", "2.2"],
+    correcta:     "2.2",
+    fb_correcto:   "¡Correcto! El diente señalado corresponde al 2.2 según la nomenclatura FDI. Este es el incisivo lateral del cuadrante superior izquierdo. En FDI el cuadrante 2 es el maxilar superior izquierdo, y el número 2 indica el incisivo lateral.",
+    fb_incorrecto: "Incorrecto. La respuesta correcta es 2.2. Este diente es el incisivo lateral superior izquierdo. En FDI el cuadrante 2 corresponde al maxilar superior izquierdo, y el número 2 indica el incisivo lateral."
+  },
+  {
+    sistema:      "FDI / ADA",
+    enunciado:    "Observe la imagen. Seleccione la alternativa correcta para el diente señalado con la flecha, considerando el sistema de nomenclatura indicado.",
+    imagen:       BASE_IMG + "Ejercicio%203.png",
+    alternativas: ["ADA 20", "ADA 29", "FDI 3.5", "FDI 4.4"],
+    correcta:     "ADA 20",
+    fb_correcto:   "¡Correcto! El diente señalado corresponde al número 20 según el sistema ADA (Universal). En el sistema ADA la numeración va del 1 al 32 en sentido horario comenzando por el tercer molar superior derecho. El diente 20 corresponde al segundo premolar inferior izquierdo.",
+    fb_incorrecto: "Incorrecto. La respuesta correcta es ADA 20. En el sistema ADA la numeración va del 1 al 32 en sentido horario. El diente señalado es el segundo premolar inferior izquierdo, que corresponde al número 20 en este sistema."
   }
 ];
 
 /* ══════════════════════════════════════════════════
    ESTADO
    ══════════════════════════════════════════════════ */
-let usuarios      = [];   // se carga desde usuarios.json
+let usuarios      = [];
 let usuarioActual = "";
 let indice        = 0;
 let puntaje       = 0;
@@ -252,8 +251,7 @@ let historial     = [];
 let respondido    = false;
 
 /* ══════════════════════════════════════════════════
-   CARGA DE USUARIOS DESDE JSON
-   Al iniciar la app, lee usuarios.json automáticamente
+   CARGA DE USUARIOS DESDE usuarios.json
    ══════════════════════════════════════════════════ */
 async function cargarUsuarios() {
   try {
@@ -261,42 +259,8 @@ async function cargarUsuarios() {
     usuarios   = await resp.json();
   } catch(e) {
     console.error("No se pudo cargar usuarios.json:", e);
-    // Fallback de emergencia si el JSON falla
     usuarios = [{ usuario: "vidiazs", password: "UDD2026" }];
   }
-}
-
-/* ══════════════════════════════════════════════════
-   SVG PLACEHOLDER
-   ══════════════════════════════════════════════════ */
-function svgPlaceholder(ej) {
-  const esFDI = ej.sistema === "FDI";
-  const fx = esFDI ? 268 : 190, fy = esFDI ? 50 : 45;
-  const tx = esFDI ? 251 : 186, ty = esFDI ? 72 : 68;
-  return `
-  <svg style="width:100%;padding:16px" viewBox="0 0 340 190" xmlns="http://www.w3.org/2000/svg">
-    <text x="170" y="18" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#94a3b8">
-      Imagen placeholder — se reemplazará con foto real
-    </text>
-    <path d="M 55 100 Q 170 28 285 100" fill="none" stroke="#94a3b8" stroke-width="2"/>
-    <path d="M 55 112 Q 170 182 285 112" fill="none" stroke="#94a3b8" stroke-width="2"/>
-    ${Array.from({length:8},(_,i)=>{
-      const x=76+i*28, r=(esFDI&&i===7)||(!esFDI&&i===3);
-      return `<rect x="${x-10}" y="70" width="20" height="28" rx="5"
-        fill="${r?'#bfdbfe':'#e2e8f0'}" stroke="${r?'#2563b0':'#94a3b8'}"
-        stroke-width="${r?2.5:1}"/>`;
-    }).join('')}
-    ${Array.from({length:8},(_,i)=>{
-      const x=76+i*28;
-      return `<rect x="${x-10}" y="104" width="20" height="28" rx="5" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1"/>`;
-    }).join('')}
-    <defs><marker id="punta" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L8,3 z" fill="#1a3c6e"/>
-    </marker></defs>
-    <line x1="${fx}" y1="${fy}" x2="${tx}" y2="${ty}"
-          stroke="#1a3c6e" stroke-width="2.5" stroke-linecap="round" marker-end="url(#punta)"/>
-    <text x="${fx+8}" y="${fy-3}" font-family="DM Sans" font-size="12" font-weight="700" fill="#1a3c6e">¿?</text>
-  </svg>`;
 }
 
 /* ══════════════════════════════════════════════════
@@ -316,7 +280,6 @@ async function iniciarSesion() {
   const errEl     = document.getElementById('error-login');
   const btnLogin  = document.getElementById('btn-login');
 
-  // Si los usuarios aún no cargaron, esperar
   if (usuarios.length === 0) {
     btnLogin.disabled    = true;
     btnLogin.textContent = "Cargando...";
@@ -367,15 +330,16 @@ function renderEjercicio() {
   document.getElementById('tag-sistema').textContent  = ej.sistema;
   document.getElementById('enunciado').textContent    = ej.enunciado;
 
+  // Imagen
   const imgWrap = document.getElementById('img-wrap');
-  imgWrap.innerHTML = ej.imagen
-    ? `<img src="${ej.imagen}" alt="Imagen ejercicio">`
-    : svgPlaceholder(ej);
+  imgWrap.innerHTML = `<img src="${ej.imagen}" alt="Ejercicio ${indice+1}"
+    onerror="this.parentElement.innerHTML='<p style=color:var(--texto-sub);padding:20px;text-align:center>Imagen no disponible aún</p>'">`;
 
+  // Alternativas en orden aleatorio
   const divAlt = document.getElementById('alternativas');
   divAlt.innerHTML = '';
-  [...ej.alternativas].sort(()=>Math.random()-.5).forEach(alt => {
-    const btn = document.createElement('button');
+  [...ej.alternativas].sort(() => Math.random() - .5).forEach(alt => {
+    const btn       = document.createElement('button');
     btn.className   = 'alt-btn';
     btn.textContent = alt;
     btn.onclick     = () => responder(alt, btn, ej);
@@ -421,7 +385,7 @@ function responder(seleccion, botonPresionado, ej) {
   document.getElementById('feedback-texto').textContent =
     esCorrecta ? ej.fb_correcto : ej.fb_incorrecto;
 
-  const btnSig = document.getElementById('btn-siguiente');
+  const btnSig     = document.getElementById('btn-siguiente');
   btnSig.style.display = 'block';
   btnSig.textContent   = indice+1 < ejercicios.length
     ? 'Siguiente pregunta →' : 'Ver mis resultados →';
@@ -478,7 +442,7 @@ function salir() {
 }
 
 /* ══════════════════════════════════════════════════
-   INICIO — cargar usuarios al abrir la app
+   INICIO
    ══════════════════════════════════════════════════ */
 cargarUsuarios();
 </script>
