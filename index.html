@@ -249,6 +249,7 @@ let indice        = 0;
 let puntaje       = 0;
 let historial     = [];
 let respondido    = false;
+let intentoNum    = 0;
 
 /* ══════════════════════════════════════════════════
    CARGA DE USUARIOS DESDE usuarios.json
@@ -307,6 +308,7 @@ async function iniciarSesion() {
    INICIAR INTENTO
    ══════════════════════════════════════════════════ */
 function iniciarIntento() {
+  intentoNum++;
   indice     = 0;
   puntaje    = 0;
   historial  = [];
@@ -429,10 +431,45 @@ function mostrarResultados() {
     lista.appendChild(div);
   });
 
+  enviarAForms(puntaje, total - puntaje, total, pct);
   mostrarPantalla('pantalla-resultados');
 }
 
 function reiniciar() { iniciarIntento(); }
+
+/* ══════════════════════════════════════════════════
+   ENVIAR DATOS A MICROSOFT FORMS
+   Forms → Power Automate → Excel SharePoint
+   ══════════════════════════════════════════════════ */
+function enviarAForms(correctas, incorrectas, total, porcentaje) {
+  try {
+    const ahora = new Date();
+    const fecha = ahora.toLocaleDateString("es-CL");
+    const hora  = ahora.toLocaleTimeString("es-CL", { hour:"2-digit", minute:"2-digit", second:"2-digit" });
+
+    const FORMS_URL = "https://forms.office.com/Pages/ResponsePage.aspx?id=J4nXtdAlqUSDcNhuV8e6lpUEVbVXxktNloqFF6LW3OxUMlJOTDJJRURETjRRRDJZMUxFRkNVWVBEWS4u";
+
+    const params = new URLSearchParams({
+      r1c1: usuarioActual,
+      r2c1: fecha,
+      r3c1: hora,
+      r4c1: String(intentoNum),
+      r5c1: String(correctas),
+      r6c1: String(incorrectas),
+      r7c1: String(total),
+      r8c1: String(porcentaje) + "%"
+    });
+
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = FORMS_URL + "&" + params.toString();
+    document.body.appendChild(iframe);
+    setTimeout(() => { if (iframe.parentNode) iframe.parentNode.removeChild(iframe); }, 5000);
+
+  } catch(e) {
+    console.warn("No se pudo enviar a Forms:", e);
+  }
+}
 
 function salir() {
   usuarioActual = "";
