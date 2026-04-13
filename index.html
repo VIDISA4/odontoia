@@ -7,56 +7,32 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
     :root {
-      --azul:      #1a3c6e;
-      --azul-claro:#2563b0;
-      --verde:     #16a34a;
-      --rojo:      #dc2626;
-      --gris-bg:   #f1f5f9;
-      --gris-borde:#cbd5e1;
-      --texto:     #1e293b;
-      --texto-sub: #64748b;
-      --blanco:    #ffffff;
-      --radio:     14px;
+      --azul:       #1a3c6e;
+      --azul-claro: #2563b0;
+      --verde:      #16a34a;
+      --rojo:       #dc2626;
+      --amarillo:   #d97706;
+      --gris-bg:    #f1f5f9;
+      --gris-borde: #cbd5e1;
+      --texto:      #1e293b;
+      --texto-sub:  #64748b;
+      --blanco:     #ffffff;
+      --radio:      14px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: 'DM Sans', sans-serif;
       background: var(--gris-bg);
       color: var(--texto);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
       padding: 20px;
     }
-
-    .logo {
-      font-family: 'DM Serif Display', serif;
-      font-size: 2rem;
-      color: var(--azul);
-      text-align: center;
-      margin-bottom: 6px;
-    }
+    .logo { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--azul); text-align: center; margin-bottom: 6px; }
     .logo span { color: var(--azul-claro); }
-
-    .subtitulo {
-      text-align: center;
-      color: var(--texto-sub);
-      font-size: 0.9rem;
-      margin-bottom: 28px;
-    }
-
-    .card {
-      background: var(--blanco);
-      border-radius: var(--radio);
-      padding: 32px;
-      width: 100%;
-      max-width: 520px;
-      box-shadow: 0 4px 24px rgba(0,0,0,.08);
-    }
+    .subtitulo { text-align: center; color: var(--texto-sub); font-size: 0.9rem; margin-bottom: 28px; }
+    .card { background: var(--blanco); border-radius: var(--radio); padding: 32px; width: 100%; max-width: 540px; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
 
     /* LOGIN */
     #pantalla-login h2 { font-size: 1.15rem; margin-bottom: 22px; color: var(--azul); }
@@ -74,11 +50,42 @@
     .btn-secondary { width: 100%; background: none; border: 2px solid var(--azul); color: var(--azul); border-radius: 8px; padding: 12px; font-size: 0.95rem; font-family: inherit; font-weight: 600; cursor: pointer; transition: background .2s, color .2s; }
     .btn-secondary:hover { background: var(--azul); color: #fff; }
 
+    /* SELECTOR */
+    .selector-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .selector-header h2 { font-size: 1.1rem; color: var(--azul); }
+    .bienvenida { font-size: 0.88rem; color: var(--texto-sub); margin-bottom: 28px; }
+    .bienvenida strong { color: var(--azul-claro); }
+
+    .grupo-cards { display: flex; flex-direction: column; gap: 14px; }
+    .grupo-card {
+      border: 2px solid var(--gris-borde);
+      border-radius: 14px;
+      padding: 22px 20px;
+      cursor: pointer;
+      transition: border .2s, background .2s, transform .1s;
+      display: flex; align-items: center; gap: 18px;
+    }
+    .grupo-card:hover { transform: translateY(-2px); }
+    .grupo-card.g1:hover { border-color: var(--azul-claro); background: #eff6ff; }
+    .grupo-card.g2:hover { border-color: var(--amarillo); background: #fffbeb; }
+    .grupo-icono { font-size: 2.4rem; flex-shrink: 0; }
+    .grupo-info { flex: 1; }
+    .grupo-nombre { font-weight: 700; font-size: 1.05rem; color: var(--texto); margin-bottom: 4px; }
+    .grupo-desc { font-size: 0.82rem; color: var(--texto-sub); margin-bottom: 8px; line-height: 1.4; }
+    .grupo-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+    .pill {
+      display: inline-block; border-radius: 99px;
+      padding: 2px 10px; font-size: 0.72rem; font-weight: 600;
+    }
+    .pill-azul   { background: #dbeafe; color: var(--azul-claro); }
+    .pill-verde  { background: #dcfce7; color: var(--verde); }
+    .pill-amari  { background: #fef3c7; color: var(--amarillo); }
+
     /* HEADER EJERCICIO */
     .ej-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .usuario-chip { display: flex; align-items: center; gap: 6px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 99px; padding: 4px 12px; font-size: 0.8rem; font-weight: 600; color: var(--azul-claro); }
-    .btn-salir { background: none; border: none; color: var(--texto-sub); font-size: 0.82rem; cursor: pointer; font-family: inherit; text-decoration: underline; }
-    .btn-salir:hover { color: var(--rojo); }
+    .btn-volver { background: none; border: none; color: var(--texto-sub); font-size: 0.82rem; cursor: pointer; font-family: inherit; text-decoration: underline; }
+    .btn-volver:hover { color: var(--azul); }
 
     /* PROGRESO */
     .progreso-wrap { margin-bottom: 20px; }
@@ -87,20 +94,39 @@
     .barra-relleno { background: var(--azul-claro); height: 100%; border-radius: 99px; transition: width .4s ease; }
 
     .tag-sistema { display: inline-block; background: #eff6ff; color: var(--azul-claro); border: 1px solid #bfdbfe; border-radius: 99px; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: .04em; }
+    .tag-escritura { background: #fef3c7; color: var(--amarillo); border-color: #fde68a; }
 
     .enunciado { font-size: 1rem; font-weight: 500; line-height: 1.55; margin-bottom: 18px; }
 
     /* IMAGEN */
-    .img-wrap { background: var(--gris-bg); border: 1.5px solid var(--gris-borde); border-radius: 10px; overflow: hidden; margin-bottom: 20px; min-height: 200px; display: flex; align-items: center; justify-content: center; }
-    .img-wrap img { max-width: 100%; height: auto; max-height: none; object-fit: contain; display: block; }
+    .img-wrap { background: var(--gris-bg); border: 1.5px solid var(--gris-borde); border-radius: 10px; overflow: hidden; margin-bottom: 20px; min-height: 180px; display: flex; align-items: center; justify-content: center; }
+    .img-wrap img { max-width: 100%; height: auto; object-fit: contain; display: block; }
 
-    /* ALTERNATIVAS */
+    /* ALTERNATIVAS (selección múltiple) */
     .alternativas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
-    .alt-btn { background: var(--blanco); border: 2px solid var(--gris-borde); border-radius: 10px; padding: 14px 10px; font-size: 1rem; font-family: inherit; font-weight: 600; color: var(--texto); cursor: pointer; transition: border .15s, background .15s, transform .1s; }
+    .alt-btn { background: var(--blanco); border: 2px solid var(--gris-borde); border-radius: 10px; padding: 13px 10px; font-size: 0.95rem; font-family: inherit; font-weight: 600; color: var(--texto); cursor: pointer; transition: border .15s, background .15s, transform .1s; }
     .alt-btn:hover:not(:disabled) { border-color: var(--azul-claro); background: #eff6ff; transform: translateY(-1px); }
     .alt-btn:disabled { cursor: not-allowed; }
     .alt-btn.correcta  { border-color: var(--verde); background: #dcfce7; color: var(--verde); }
-    .alt-btn.incorrecta{ border-color: var(--rojo);  background: #fee2e2; color: var(--rojo);  }
+    .alt-btn.incorrecta{ border-color: var(--rojo);  background: #fee2e2; color: var(--rojo); }
+
+    /* ESCRITURA */
+    .escritura-wrap { margin-bottom: 18px; }
+    .escritura-hint { font-size: 0.82rem; color: var(--texto-sub); margin-bottom: 8px; }
+    .escritura-row { display: flex; gap: 10px; }
+    .escritura-input {
+      flex: 1; border: 2px solid var(--gris-borde); border-radius: 10px;
+      padding: 13px 14px; font-size: 1.1rem; font-family: inherit;
+      font-weight: 700; text-align: center; outline: none;
+      transition: border .2s; text-transform: uppercase;
+    }
+    .escritura-input:focus { border-color: var(--azul-claro); }
+    .escritura-input.correcto  { border-color: var(--verde); background: #dcfce7; color: var(--verde); }
+    .escritura-input.incorrecto{ border-color: var(--rojo);  background: #fee2e2; color: var(--rojo); }
+    .escritura-input:disabled  { cursor: not-allowed; }
+    .btn-verificar { background: var(--azul); color: #fff; border: none; border-radius: 10px; padding: 13px 20px; font-size: 0.95rem; font-family: inherit; font-weight: 600; cursor: pointer; transition: background .2s; white-space: nowrap; }
+    .btn-verificar:hover { background: var(--azul-claro); }
+    .btn-verificar:disabled { background: var(--gris-borde); cursor: not-allowed; }
 
     /* FEEDBACK */
     .feedback { border-radius: 10px; padding: 14px 16px; font-size: 0.9rem; line-height: 1.55; margin-bottom: 18px; display: none; animation: fadeIn .25s ease; }
@@ -117,17 +143,15 @@
     .detalle-wrap { text-align: left; margin: 18px 0; border-top: 1px solid var(--gris-borde); padding-top: 16px; }
     .detalle-titulo { font-size: 0.8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--texto-sub); margin-bottom: 12px; }
     .item-resultado { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--gris-bg); font-size: 0.88rem; }
-    .badge { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; flex-shrink: 0; margin-top: 1px; }
-    .badge.ok  { background: #dcfce7; color: var(--verde); }
-    .badge.mal { background: #fee2e2; color: var(--rojo);  }
-    .acciones-resultado { display: flex; gap: 10px; margin-top: 20px; }
-    .acciones-resultado button { flex: 1; }
+    .badge-r { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; flex-shrink: 0; margin-top: 1px; }
+    .badge-r.ok  { background: #dcfce7; color: var(--verde); }
+    .badge-r.mal { background: #fee2e2; color: var(--rojo); }
+    .acciones-resultado { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+    .acciones-resultado button { flex: 1; min-width: 130px; }
 
     .udd-badge { margin-top: 20px; font-size: 0.75rem; color: var(--texto-sub); text-align: center; }
-
     .pantalla        { display: none; }
     .pantalla.activa { display: block; }
-
     @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
   </style>
 </head>
@@ -136,55 +160,104 @@
   <div class="logo">Odonto<span>IA</span></div>
   <p class="subtitulo">Ejercicios de nomenclatura dental · UDD Concepción</p>
 
-  <!-- LOGIN -->
+  <!-- ══════════ LOGIN ══════════ -->
   <div class="card pantalla activa" id="pantalla-login">
     <h2>Ingresa tus datos para comenzar</h2>
     <div class="campo">
       <label>Usuario</label>
-      <input type="text" id="input-usuario"
-             placeholder="Tu correo sin @udd.cl"
+      <input type="text" id="input-usuario" placeholder="Tu correo sin @udd.cl"
              onkeydown="if(event.key==='Enter') document.getElementById('input-pass').focus()">
     </div>
     <div class="campo">
       <label>Contraseña</label>
-      <input type="password" id="input-pass"
-             placeholder="Contraseña entregada por tu docente"
+      <input type="password" id="input-pass" placeholder="Contraseña entregada por tu docente"
              onkeydown="if(event.key==='Enter') iniciarSesion()">
     </div>
     <p class="error-msg" id="error-login"></p>
     <button class="btn-primary" id="btn-login" onclick="iniciarSesion()">Entrar →</button>
   </div>
 
-  <!-- EJERCICIO -->
+  <!-- ══════════ SELECTOR ══════════ -->
+  <div class="card pantalla" id="pantalla-selector">
+    <div class="selector-header">
+      <h2>¿Qué deseas practicar?</h2>
+      <button class="btn-volver" onclick="salir()">Cerrar sesión</button>
+    </div>
+    <p class="bienvenida">Hola <strong id="chip-bienvenida"></strong>, elige un grupo de ejercicios.</p>
+
+    <div class="grupo-cards">
+
+      <div class="grupo-card g1" onclick="iniciarGrupo('grupo1')">
+        <div class="grupo-icono">🦷</div>
+        <div class="grupo-info">
+          <div class="grupo-nombre">Grupo 1 — Dentición Permanente y Temporal</div>
+          <div class="grupo-desc">Ejercicios de identificación con los sistemas FDI y ADA, superficies y combinados.</div>
+          <div class="grupo-pills">
+            <span class="pill pill-azul">21 ejercicios</span>
+            <span class="pill pill-verde">Selección múltiple</span>
+            <span class="pill pill-amari">Escritura</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grupo-card g2" onclick="iniciarGrupo('grupo2')">
+        <div class="grupo-icono">🪥</div>
+        <div class="grupo-info">
+          <div class="grupo-nombre">Grupo 2 — Dentición Mixta</div>
+          <div class="grupo-desc">Ejercicios avanzados con dentición permanente y temporal mezcladas.</div>
+          <div class="grupo-pills">
+            <span class="pill pill-amari">6 ejercicios</span>
+            <span class="pill pill-verde">Selección múltiple</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ EJERCICIO ══════════ -->
   <div class="card pantalla" id="pantalla-ejercicio">
     <div class="ej-header">
       <div class="usuario-chip">👤 <span id="chip-usuario"></span></div>
-      <button class="btn-salir" onclick="salir()">Cerrar sesión</button>
+      <button class="btn-volver" onclick="volverSelector()">← Volver</button>
     </div>
     <div class="progreso-wrap">
       <div class="progreso-label">
-        <span id="lbl-pregunta">Pregunta 1 de 3</span>
+        <span id="lbl-pregunta">Pregunta 1 de 20</span>
         <span id="lbl-score">0 correctas</span>
       </div>
-      <div class="barra-fondo">
-        <div class="barra-relleno" id="barra" style="width:0%"></div>
-      </div>
+      <div class="barra-fondo"><div class="barra-relleno" id="barra" style="width:0%"></div></div>
     </div>
+
     <div class="tag-sistema" id="tag-sistema">FDI</div>
     <p class="enunciado" id="enunciado"></p>
     <div class="img-wrap" id="img-wrap"></div>
+
+    <!-- Selección múltiple -->
     <div class="alternativas" id="alternativas"></div>
+
+    <!-- Escritura -->
+    <div class="escritura-wrap" id="escritura-wrap" style="display:none">
+      <p class="escritura-hint">✏️ Escribe tu respuesta y presiona Verificar</p>
+      <div class="escritura-row">
+        <input type="text" class="escritura-input" id="escritura-input"
+               placeholder="Ej: 1.2"
+               onkeydown="if(event.key==='Enter') verificarEscritura()">
+        <button class="btn-verificar" id="btn-verificar" onclick="verificarEscritura()">Verificar</button>
+      </div>
+    </div>
+
     <div class="feedback" id="feedback">
       <div class="feedback-titulo" id="feedback-titulo"></div>
       <div id="feedback-texto"></div>
     </div>
-    <button class="btn-primary" id="btn-siguiente"
-            style="display:none" onclick="siguienteEjercicio()">
+
+    <button class="btn-primary" id="btn-siguiente" style="display:none" onclick="siguienteEjercicio()">
       Siguiente pregunta →
     </button>
   </div>
 
-  <!-- RESULTADOS -->
+  <!-- ══════════ RESULTADOS ══════════ -->
   <div class="card pantalla" id="pantalla-resultados">
     <div class="res-icono" id="res-icono">🦷</div>
     <div class="res-titulo" id="res-titulo">¡Sesión completada!</div>
@@ -195,56 +268,277 @@
       <div id="lista-detalle"></div>
     </div>
     <div class="acciones-resultado">
-      <button class="btn-secondary" onclick="reiniciar()">↺ Intentar de nuevo</button>
-      <button class="btn-primary"   onclick="salir()">Cerrar sesión</button>
+      <button class="btn-secondary" onclick="reiniciar()">↺ Repetir grupo</button>
+      <button class="btn-primary"   onclick="volverSelector()">Elegir otro grupo</button>
     </div>
   </div>
 
-  <p class="udd-badge">
-    Imágenes obtenidas de sitios web públicos · Universidad del Desarrollo
-  </p>
+  <p class="udd-badge">Imágenes obtenidas de sitios web públicos · Universidad del Desarrollo</p>
 
 <script>
-/* ══════════════════════════════════════════════════
-   EJERCICIOS — proporcionados por Pía Moreno y Carol Senn
-   ══════════════════════════════════════════════════ */
-const BASE_IMG = "https://raw.githubusercontent.com/VIDISA4/odontoia/main/";
+const IMG1 = "https://raw.githubusercontent.com/VIDISA4/odontoia/main/Ejercicio%201.";
+const IMG2 = "https://raw.githubusercontent.com/VIDISA4/odontoia/main/Ejercicio%202.";
 
-const ejercicios = [
-  {
-    sistema:      "FDI",
-    enunciado:    "Observe la imagen. Seleccione la alternativa que corresponde al diente señalado con la flecha, según el sistema de nomenclatura FDI.",
-    imagen:       BASE_IMG + "Ejercicio%201.png",
-    alternativas: ["2.4", "1.4", "3.5", "3.4"],
-    correcta:     "2.4",
-    fb_correcto:   "¡Correcto! El diente señalado corresponde al 2.4 según la nomenclatura FDI. Este es el primer premolar del cuadrante superior izquierdo. En FDI el cuadrante 2 corresponde al maxilar superior izquierdo, y el dígito 4 indica el primer premolar.",
-    fb_incorrecto: "Incorrecto. La respuesta correcta es 2.4. Este diente corresponde al primer premolar del cuadrante superior izquierdo. Recuerda que en FDI el cuadrante 2 es el maxilar superior izquierdo, y el número 4 indica el primer premolar."
-  },
-  {
-    sistema:      "FDI",
-    enunciado:    "Observe la imagen. Seleccione la alternativa que corresponde al diente señalado con la flecha, según el sistema de nomenclatura FDI.",
-    imagen:       BASE_IMG + "Ejercicio%202.png",
-    alternativas: ["3.2", "1.2", "2.1", "2.2"],
-    correcta:     "2.2",
-    fb_correcto:   "¡Correcto! El diente señalado corresponde al 2.2 según la nomenclatura FDI. Este es el incisivo lateral del cuadrante superior izquierdo. En FDI el cuadrante 2 es el maxilar superior izquierdo, y el número 2 indica el incisivo lateral.",
-    fb_incorrecto: "Incorrecto. La respuesta correcta es 2.2. Este diente es el incisivo lateral superior izquierdo. En FDI el cuadrante 2 corresponde al maxilar superior izquierdo, y el número 2 indica el incisivo lateral."
-  },
-  {
-    sistema:      "FDI / ADA",
-    enunciado:    "Observe la imagen. Seleccione la alternativa correcta para el diente señalado con la flecha, considerando el sistema de nomenclatura indicado.",
-    imagen:       BASE_IMG + "Ejercicio%203.png",
-    alternativas: ["ADA 20", "ADA 29", "FDI 3.5", "FDI 4.4"],
-    correcta:     "ADA 20",
-    fb_correcto:   "¡Correcto! El diente señalado corresponde al número 20 según el sistema ADA (Universal). En el sistema ADA la numeración va del 1 al 32 en sentido horario comenzando por el tercer molar superior derecho. El diente 20 corresponde al segundo premolar inferior izquierdo.",
-    fb_incorrecto: "Incorrecto. La respuesta correcta es ADA 20. En el sistema ADA la numeración va del 1 al 32 en sentido horario. El diente señalado es el segundo premolar inferior izquierdo, que corresponde al número 20 en este sistema."
-  }
-];
+/* ══════════════════════════════════════════════════
+   BANCO DE EJERCICIOS
+   tipo: "seleccion" | "escritura"
+   ══════════════════════════════════════════════════ */
+const BANCO = {
+
+  grupo1: [
+    {
+      tipo: "seleccion", sistema: "FDI",
+      enunciado: "Observe la imagen. Seleccione el número FDI que corresponde al diente señalado con la flecha.",
+      imagen: IMG1 + "1.png",
+      alternativas: ["2.4", "1.4", "3.5", "6.4"],
+      correcta: "2.4",
+      fb_correcto:   "¡Correcto! El diente 2.4 es el primer premolar del cuadrante superior izquierdo. El cuadrante 2 en FDI es el maxilar superior izquierdo y el 4 indica el primer premolar.",
+      fb_incorrecto: "Incorrecto. La respuesta es 2.4 (primer premolar superior izquierdo). En FDI el cuadrante 2 es el maxilar superior izquierdo y el número 4 indica el primer premolar."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI",
+      enunciado: "Observe la imagen. Seleccione el número FDI que corresponde al diente señalado con la flecha.",
+      imagen: IMG1 + "2.png",
+      alternativas: ["3.2", "1.2", "2.1", "2.2"],
+      correcta: "2.2",
+      fb_correcto:   "¡Correcto! El diente 2.2 es el incisivo lateral del cuadrante superior izquierdo. El cuadrante 2 en FDI es el maxilar superior izquierdo y el 2 indica el incisivo lateral.",
+      fb_incorrecto: "Incorrecto. La respuesta es 2.2 (incisivo lateral superior izquierdo). El cuadrante 2 es el maxilar superior izquierdo y el número 2 indica el incisivo lateral."
+    },
+    {
+      tipo: "seleccion", sistema: "ADA",
+      enunciado: "Para la siguiente imagen, seleccione la alternativa correcta usando como referencia la flecha.",
+      imagen: IMG1 + "3.png",
+      alternativas: ["ADA 20", "ADA 29", "FDI 3.5", "FDI 4.4"],
+      correcta: "ADA 20",
+      fb_correcto:   "¡Correcto! En ADA la numeración va del 1 al 32 en sentido horario. El diente 20 corresponde al segundo premolar inferior izquierdo.",
+      fb_incorrecto: "Incorrecto. La respuesta es ADA 20 (segundo premolar inferior izquierdo). En ADA se numera del 1 al 32 comenzando por el tercer molar superior derecho en sentido horario."
+    },
+    {
+      tipo: "seleccion", sistema: "ADA",
+      enunciado: "Observe la imagen. Seleccione la alternativa correcta usando el sistema de nomenclatura ADA.",
+      imagen: IMG1 + "4.png",
+      alternativas: ["ADA M", "ADA R", "FDI 3.3", "FDI 8.3"],
+      correcta: "ADA R",
+      fb_correcto:   "¡Correcto! La letra R en ADA corresponde al canino temporal inferior izquierdo. En ADA la dentición temporal usa letras de la A a la T.",
+      fb_incorrecto: "Incorrecto. La respuesta es ADA R (canino temporal inferior izquierdo). En ADA la dentición temporal se identifica con letras de la A a la T."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI",
+      enunciado: "Observe la imagen. Seleccione el número FDI que corresponde al diente señalado con la flecha.",
+      imagen: IMG1 + "5.png",
+      alternativas: ["7.4", "2.4", "6.4", "5.4"],
+      correcta: "6.4",
+      fb_correcto:   "¡Correcto! El diente 6.4 es el primer molar temporal del cuadrante inferior izquierdo. En FDI la dentición temporal usa los cuadrantes 5 al 8.",
+      fb_incorrecto: "Incorrecto. La respuesta es 6.4 (primer molar temporal inferior izquierdo). En FDI la dentición temporal usa los cuadrantes 5, 6, 7 y 8."
+    },
+    {
+      tipo: "seleccion", sistema: "SUPERFICIE",
+      enunciado: "Observe la imagen. Señale la superficie que indica el punto marcado.",
+      imagen: IMG1 + "6.png",
+      alternativas: ["Palatina", "Vestibular", "Oclusal", "Incisal"],
+      correcta: "Incisal",
+      fb_correcto:   "¡Correcto! La superficie incisal es el borde cortante de los dientes anteriores (incisivos y caninos). Es la superficie que entra en contacto al morder.",
+      fb_incorrecto: "Incorrecto. La respuesta es Incisal. Esta superficie es el borde cortante de los dientes anteriores. No confundir con oclusal (premolares y molares) ni con palatina o vestibular."
+    },
+    {
+      tipo: "escritura", sistema: "FDI",
+      enunciado: "Escriba el número FDI del diente señalado con la flecha en la imagen.",
+      imagen: IMG1 + "7.png",
+      correcta: "6.2",
+      fb_correcto:   "¡Correcto! El diente 6.2 es el incisivo lateral temporal del cuadrante inferior izquierdo. El cuadrante 6 en FDI corresponde a la mandíbula izquierda en dentición temporal.",
+      fb_incorrecto: "Incorrecto. La respuesta correcta es 6.2 (incisivo lateral temporal inferior izquierdo). El cuadrante 6 en FDI es la mandíbula izquierda en dentición temporal."
+    },
+    {
+      tipo: "escritura", sistema: "ADA",
+      enunciado: "Escriba la letra ADA del diente señalado con la flecha en la imagen.",
+      imagen: IMG1 + "8.png",
+      correcta: "A",
+      fb_correcto:   "¡Correcto! La letra A en ADA corresponde al segundo molar temporal superior derecho. En ADA la dentición temporal se nombra con letras de la A a la T.",
+      fb_incorrecto: "Incorrecto. La respuesta correcta es A (segundo molar temporal superior derecho). En ADA la dentición temporal usa letras de la A a la T."
+    },
+    {
+      tipo: "seleccion", sistema: "COMBINADO",
+      enunciado: "Seleccione la alternativa correcta que indique el diente (flecha) y la superficie (punto) correctas.",
+      imagen: IMG1 + "9.png",
+      alternativas: ["C DISTAL", "1.4 MESIAL", "D MESIAL", "5.2 DISTAL"],
+      correcta: "5.2 DISTAL",
+      fb_correcto:   "¡Correcto! El diente 5.2 es el incisivo lateral temporal superior derecho y la superficie DISTAL es la cara alejada de la línea media.",
+      fb_incorrecto: "Incorrecto. La respuesta es 5.2 DISTAL. El 5.2 corresponde al incisivo lateral temporal superior derecho y la superficie distal es la cara alejada de la línea media."
+    },
+    {
+      tipo: "escritura", sistema: "ADA",
+      enunciado: "Escriba la letra ADA del diente señalado con la flecha en la imagen.",
+      imagen: IMG1 + "10.png",
+      correcta: "S",
+      fb_correcto:   "¡Correcto! La letra S en ADA corresponde al primer molar temporal inferior izquierdo. En ADA la dentición temporal se nombra con letras de la A a la T.",
+      fb_incorrecto: "Incorrecto. La respuesta correcta es S (primer molar temporal inferior izquierdo). En ADA la dentición temporal usa letras de la A a la T."
+    },
+    {
+      tipo: "seleccion", sistema: "COMBINADO",
+      enunciado: "Seleccione la alternativa correcta que indique el diente (flecha) y la superficie (punto) correctas.",
+      imagen: IMG1 + "11.png",
+      alternativas: ["30 D", "4.7 M", "31 M", "3.7 D"],
+      correcta: "31 M",
+      fb_correcto:   "¡Correcto! El diente 31 en ADA es el segundo molar inferior izquierdo y la superficie MESIAL es la cara más cercana a la línea media.",
+      fb_incorrecto: "Incorrecto. La respuesta es 31 M. El diente 31 en ADA es el segundo molar inferior izquierdo y la letra M indica la superficie mesial."
+    },
+    {
+      tipo: "seleccion", sistema: "COMBINADO",
+      enunciado: "Seleccione la alternativa correcta que indique el diente (flecha) y la superficie (punto) correctas.",
+      imagen: IMG1 + "12.png",
+      alternativas: ["1.2 Palatina", "2.2 Palatina", "5.2 Incisal", "6.2 Incisal"],
+      correcta: "2.2 Palatina",
+      fb_correcto:   "¡Correcto! El diente 2.2 es el incisivo lateral superior izquierdo y la superficie PALATINA es la cara interna que mira hacia el paladar.",
+      fb_incorrecto: "Incorrecto. La respuesta es 2.2 Palatina. El 2.2 es el incisivo lateral superior izquierdo y la superficie palatina da hacia el paladar."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI",
+      enunciado: "Observe la imagen. Seleccione el número FDI que corresponde al diente señalado con la flecha.",
+      imagen: IMG1 + "13.png",
+      alternativas: ["8.4", "8.5", "4.6", "4.5"],
+      correcta: "4.6",
+      fb_correcto:   "¡Correcto! El diente 4.6 es el primer molar permanente del cuadrante inferior derecho. El cuadrante 4 en FDI es la mandíbula derecha y el 6 indica el primer molar.",
+      fb_incorrecto: "Incorrecto. La respuesta es 4.6 (primer molar inferior derecho). El cuadrante 4 en FDI es la mandíbula derecha y el número 6 corresponde al primer molar."
+    },
+    {
+      tipo: "seleccion", sistema: "ADA",
+      enunciado: "Observe la imagen. Seleccione el número ADA que corresponde al diente señalado con la flecha.",
+      imagen: IMG1 + "14.png",
+      alternativas: ["22", "23", "24", "25"],
+      correcta: "23",
+      fb_correcto:   "¡Correcto! El diente 23 en ADA es el canino inferior izquierdo. En ADA la numeración va en sentido horario del 1 al 32.",
+      fb_incorrecto: "Incorrecto. La respuesta es 23 (canino inferior izquierdo). En ADA la numeración va en sentido horario del 1 al 32."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI",
+      enunciado: "Observe la imagen. Seleccione el número FDI que corresponde al diente señalado con la flecha.",
+      imagen: IMG1 + "15.png",
+      alternativas: ["1.8", "1.7", "1.6", "2.8"],
+      correcta: "1.7",
+      fb_correcto:   "¡Correcto! El diente 1.7 es el segundo molar del cuadrante superior derecho. El cuadrante 1 en FDI es el maxilar superior derecho y el 7 es el segundo molar.",
+      fb_incorrecto: "Incorrecto. La respuesta es 1.7 (segundo molar superior derecho). El cuadrante 1 en FDI es el maxilar superior derecho y el número 7 corresponde al segundo molar."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI",
+      enunciado: "Observe la imagen. Seleccione el número FDI que corresponde al diente señalado con la flecha.",
+      imagen: IMG1 + "16.png",
+      alternativas: ["3.3", "4.3", "3.4", "4.4"],
+      correcta: "3.3",
+      fb_correcto:   "¡Correcto! El diente 3.3 es el canino del cuadrante inferior izquierdo. El cuadrante 3 en FDI es la mandíbula izquierda y el 3 indica el canino.",
+      fb_incorrecto: "Incorrecto. La respuesta es 3.3 (canino inferior izquierdo). El cuadrante 3 en FDI es la mandíbula izquierda y el número 3 corresponde al canino."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI",
+      enunciado: "Observe la imagen. Seleccione el número FDI que corresponde al diente señalado con la flecha.",
+      imagen: IMG1 + "17.png",
+      alternativas: ["2.6", "6.5", "5.5", "2.7"],
+      correcta: "6.5",
+      fb_correcto:   "¡Correcto! El diente 6.5 es el segundo molar temporal del cuadrante inferior izquierdo. En FDI el cuadrante 6 corresponde a la mandíbula izquierda en dentición temporal.",
+      fb_incorrecto: "Incorrecto. La respuesta es 6.5 (segundo molar temporal inferior izquierdo). El cuadrante 6 en FDI es la mandíbula izquierda en dentición temporal."
+    },
+    {
+      tipo: "seleccion", sistema: "COMBINADO",
+      enunciado: "Seleccione la alternativa correcta que indique el diente (flecha) y la superficie (punto) correctas.",
+      imagen: IMG1 + "18.png",
+      alternativas: ["32 - Oclusal", "31 - Oclusal", "3.2 - Vestibular", "30 - Vestibular"],
+      correcta: "30 - Vestibular",
+      fb_correcto:   "¡Correcto! El diente 30 en ADA es el primer molar inferior derecho y la superficie VESTIBULAR es la cara que mira hacia el carrillo.",
+      fb_incorrecto: "Incorrecto. La respuesta es 30 - Vestibular. El diente 30 en ADA es el primer molar inferior derecho y la superficie vestibular mira hacia el carrillo."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI",
+      enunciado: "Observe la imagen. Seleccione el número FDI que corresponde al diente señalado con la flecha.",
+      imagen: IMG1 + "19.png",
+      alternativas: ["2.4", "2.5", "6.4", "6.5"],
+      correcta: "6.4",
+      fb_correcto:   "¡Correcto! El diente 6.4 es el primer molar temporal del cuadrante inferior izquierdo. En FDI la dentición temporal usa los cuadrantes 5 al 8.",
+      fb_incorrecto: "Incorrecto. La respuesta es 6.4 (primer molar temporal inferior izquierdo). Recuerda que en FDI la dentición temporal usa los cuadrantes 5, 6, 7 y 8."
+    },
+    {
+      tipo: "seleccion", sistema: "COMBINADO",
+      enunciado: "Seleccione la alternativa correcta que indique el diente (flecha) y la superficie (punto) correctas.",
+      imagen: IMG1 + "20.png",
+      alternativas: ["E - Distal", "E - Mesial", "F - Mesial", "F - Distal"],
+      correcta: "F - Mesial",
+      fb_correcto:   "¡Correcto! La letra F en ADA es el primer molar temporal superior izquierdo y la superficie MESIAL es la cara más próxima a la línea media.",
+      fb_incorrecto: "Incorrecto. La respuesta es F - Mesial. La letra F en ADA es el primer molar temporal superior izquierdo y la superficie mesial es la cara más próxima a la línea media."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI",
+      enunciado: "Para la siguiente imagen, seleccione la alternativa correcta usando como referencia la flecha.",
+      imagen: IMG1 + "21.png",
+      alternativas: ["3", "1.5", "5", "1.4"],
+      correcta: "1.5",
+      fb_correcto:   "¡Correcto! El diente 1.5 es el segundo premolar del cuadrante superior derecho. El cuadrante 1 en FDI es el maxilar superior derecho y el 5 indica el segundo premolar.",
+      fb_incorrecto: "Incorrecto. La respuesta es 1.5 (segundo premolar superior derecho). El cuadrante 1 en FDI es el maxilar superior derecho y el número 5 corresponde al segundo premolar."
+    }
+  ],
+
+  grupo2: [
+    {
+      tipo: "seleccion", sistema: "FDI — Mixta",
+      enunciado: "Dentición mixta. Seleccione el número FDI del diente señalado con la flecha.",
+      imagen: IMG2 + "1.png",
+      alternativas: ["2.3", "6.3", "6.2", "2.4"],
+      correcta: "6.3",
+      fb_correcto:   "¡Correcto! El diente 6.3 es el canino temporal del cuadrante inferior izquierdo. En dentición mixta coexisten dientes temporales (cuadrantes 5-8) y permanentes (cuadrantes 1-4).",
+      fb_incorrecto: "Incorrecto. La respuesta es 6.3 (canino temporal inferior izquierdo). En dentición mixta recuerda que los temporales usan los cuadrantes 5 al 8 en FDI."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI — Mixta",
+      enunciado: "Dentición mixta. Seleccione el número FDI del diente señalado con la flecha.",
+      imagen: IMG2 + "2.png",
+      alternativas: ["5.2", "6.2", "1.2", "2.2"],
+      correcta: "1.2",
+      fb_correcto:   "¡Correcto! El diente 1.2 es el incisivo lateral permanente del cuadrante superior derecho. En dentición mixta ya están erupcionados algunos dientes permanentes.",
+      fb_incorrecto: "Incorrecto. La respuesta es 1.2 (incisivo lateral permanente superior derecho). En dentición mixta conviven temporales y permanentes."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI — Mixta",
+      enunciado: "Dentición mixta. Seleccione el número FDI del diente señalado con la flecha.",
+      imagen: IMG2 + "3.png",
+      alternativas: ["3.4", "3.5", "8.4", "7.4"],
+      correcta: "7.4",
+      fb_correcto:   "¡Correcto! El diente 7.4 es el primer molar temporal del cuadrante inferior derecho. El cuadrante 7 en FDI es la mandíbula derecha en dentición temporal.",
+      fb_incorrecto: "Incorrecto. La respuesta es 7.4 (primer molar temporal inferior derecho). El cuadrante 7 en FDI es la mandíbula derecha en dentición temporal."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI — Mixta",
+      enunciado: "Dentición mixta. Seleccione el número FDI del diente señalado con la flecha.",
+      imagen: IMG2 + "4.png",
+      alternativas: ["8.3", "4.3", "4.4", "8.4"],
+      correcta: "8.3",
+      fb_correcto:   "¡Correcto! El diente 8.3 es el canino temporal del cuadrante inferior derecho. El cuadrante 8 en FDI es la mandíbula derecha en dentición temporal.",
+      fb_incorrecto: "Incorrecto. La respuesta es 8.3 (canino temporal inferior derecho). El cuadrante 8 en FDI es la mandíbula derecha en dentición temporal."
+    },
+    {
+      tipo: "seleccion", sistema: "ADA — Mixta",
+      enunciado: "Dentición mixta. Seleccione la letra ADA que corresponde al diente señalado con la flecha.",
+      imagen: IMG2 + "5.png",
+      alternativas: ["T", "S", "29", "30"],
+      correcta: "T",
+      fb_correcto:   "¡Correcto! La letra T en ADA es el segundo molar temporal inferior derecho. En ADA la dentición temporal usa letras de la A a la T.",
+      fb_incorrecto: "Incorrecto. La respuesta es T (segundo molar temporal inferior derecho). En ADA la dentición temporal se identifica con letras de la A a la T."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI — Mixta",
+      enunciado: "Dentición mixta. Seleccione el número FDI del diente señalado con la flecha.",
+      imagen: IMG2 + "6.png",
+      alternativas: ["8.5", "4.6", "4.7", "4.8"],
+      correcta: "4.6",
+      fb_correcto:   "¡Correcto! El diente 4.6 es el primer molar permanente del cuadrante inferior derecho. También llamado 'molar de los seis años', es clave en el desarrollo oclusal.",
+      fb_incorrecto: "Incorrecto. La respuesta es 4.6 (primer molar permanente inferior derecho). Este diente erupciona alrededor de los 6 años y es clave en el desarrollo oclusal."
+    }
+  ]
+};
 
 /* ══════════════════════════════════════════════════
    ESTADO
    ══════════════════════════════════════════════════ */
 let usuarios      = [];
 let usuarioActual = "";
+let grupoActual   = [];
+let grupoKey      = "";
 let indice        = 0;
 let puntaje       = 0;
 let historial     = [];
@@ -252,14 +546,13 @@ let respondido    = false;
 let intentoNum    = 0;
 
 /* ══════════════════════════════════════════════════
-   CARGA DE USUARIOS DESDE usuarios.json
+   CARGA DE USUARIOS
    ══════════════════════════════════════════════════ */
 async function cargarUsuarios() {
   try {
     const resp = await fetch('usuarios.json');
     usuarios   = await resp.json();
   } catch(e) {
-    console.error("No se pudo cargar usuarios.json:", e);
     usuarios = [{ usuario: "vidiazs", password: "UDD2026" }];
   }
 }
@@ -282,37 +575,35 @@ async function iniciarSesion() {
   const btnLogin  = document.getElementById('btn-login');
 
   if (usuarios.length === 0) {
-    btnLogin.disabled    = true;
-    btnLogin.textContent = "Cargando...";
+    btnLogin.disabled = true; btnLogin.textContent = "Cargando...";
     await cargarUsuarios();
-    btnLogin.disabled    = false;
-    btnLogin.textContent = "Entrar →";
+    btnLogin.disabled = false; btnLogin.textContent = "Entrar →";
   }
 
-  const encontrado = usuarios.find(
-    u => u.usuario === inputUsr && u.password === inputPass
-  );
-
+  const encontrado = usuarios.find(u => u.usuario === inputUsr && u.password === inputPass);
   if (!encontrado) {
-    errEl.textContent   = "Usuario o contraseña incorrectos. Verifica con tu docente.";
-    errEl.style.display = "block";
-    return;
+    errEl.textContent = "Usuario o contraseña incorrectos. Verifica con tu docente.";
+    errEl.style.display = "block"; return;
   }
 
   errEl.style.display = "none";
-  usuarioActual       = encontrado.usuario;
-  iniciarIntento();
+  usuarioActual = encontrado.usuario;
+  document.getElementById('chip-bienvenida').textContent = usuarioActual;
+  mostrarPantalla('pantalla-selector');
 }
 
 /* ══════════════════════════════════════════════════
-   INICIAR INTENTO
+   INICIAR GRUPO
    ══════════════════════════════════════════════════ */
-function iniciarIntento() {
+function iniciarGrupo(key) {
+  grupoKey    = key;
+  grupoActual = [...BANCO[key]].sort(() => Math.random() - .5);
+  indice      = 0;
+  puntaje     = 0;
+  historial   = [];
+  respondido  = false;
   intentoNum++;
-  indice     = 0;
-  puntaje    = 0;
-  historial  = [];
-  respondido = false;
+
   document.getElementById('chip-usuario').textContent = usuarioActual;
   mostrarPantalla('pantalla-ejercicio');
   renderEjercicio();
@@ -323,40 +614,62 @@ function iniciarIntento() {
    ══════════════════════════════════════════════════ */
 function renderEjercicio() {
   respondido  = false;
-  const ej    = ejercicios[indice];
-  const total = ejercicios.length;
+  const ej    = grupoActual[indice];
+  const total = grupoActual.length;
 
+  // Progreso
   document.getElementById('lbl-pregunta').textContent = `Pregunta ${indice+1} de ${total}`;
   document.getElementById('lbl-score').textContent    = `${puntaje} correcta${puntaje!==1?'s':''}`;
   document.getElementById('barra').style.width        = `${(indice/total)*100}%`;
-  document.getElementById('tag-sistema').textContent  = ej.sistema;
-  document.getElementById('enunciado').textContent    = ej.enunciado;
+
+  // Tag sistema
+  const tagEl = document.getElementById('tag-sistema');
+  tagEl.textContent = ej.sistema;
+  tagEl.className   = 'tag-sistema' + (ej.tipo === 'escritura' ? ' tag-escritura' : '');
+
+  document.getElementById('enunciado').textContent = ej.enunciado;
 
   // Imagen
   const imgWrap = document.getElementById('img-wrap');
   imgWrap.innerHTML = `<img src="${ej.imagen}" alt="Ejercicio ${indice+1}"
-    onerror="this.parentElement.innerHTML='<p style=color:var(--texto-sub);padding:20px;text-align:center>Imagen no disponible aún</p>'">`;
+    onerror="this.parentElement.innerHTML='<p style=color:var(--texto-sub);padding:20px;text-align:center;font-size:.85rem>⏳ Imagen próximamente disponible</p>'">`;
 
-  // Alternativas en orden aleatorio
-  const divAlt = document.getElementById('alternativas');
-  divAlt.innerHTML = '';
-  [...ej.alternativas].sort(() => Math.random() - .5).forEach(alt => {
-    const btn       = document.createElement('button');
-    btn.className   = 'alt-btn';
-    btn.textContent = alt;
-    btn.onclick     = () => responder(alt, btn, ej);
-    divAlt.appendChild(btn);
-  });
-
+  // Ocultar feedback y siguiente
   const fb = document.getElementById('feedback');
   fb.className = 'feedback'; fb.style.display = 'none';
   document.getElementById('btn-siguiente').style.display = 'none';
+
+  // Mostrar tipo correcto
+  const divAlt = document.getElementById('alternativas');
+  const divEsc = document.getElementById('escritura-wrap');
+
+  if (ej.tipo === 'seleccion') {
+    divEsc.style.display = 'none';
+    divAlt.style.display = 'grid';
+    divAlt.innerHTML = '';
+    [...ej.alternativas].sort(() => Math.random() - .5).forEach(alt => {
+      const btn = document.createElement('button');
+      btn.className   = 'alt-btn';
+      btn.textContent = alt;
+      btn.onclick     = () => responderSeleccion(alt, btn, ej);
+      divAlt.appendChild(btn);
+    });
+  } else {
+    divAlt.style.display = 'none';
+    divEsc.style.display = 'block';
+    const input = document.getElementById('escritura-input');
+    input.value     = '';
+    input.className = 'escritura-input';
+    input.disabled  = false;
+    input.focus();
+    document.getElementById('btn-verificar').disabled = false;
+  }
 }
 
 /* ══════════════════════════════════════════════════
-   RESPONDER
+   RESPONDER — SELECCIÓN MÚLTIPLE
    ══════════════════════════════════════════════════ */
-function responder(seleccion, botonPresionado, ej) {
+function responderSeleccion(seleccion, botonPresionado, ej) {
   if (respondido) return;
   respondido = true;
 
@@ -372,105 +685,95 @@ function responder(seleccion, botonPresionado, ej) {
     if (btn === botonPresionado && !esCorrecta) btn.classList.add('incorrecta');
   });
 
-  historial.push({
-    pregunta:  `Pregunta ${indice+1} (${ej.sistema})`,
-    seleccion,
-    correcta:  ej.correcta,
-    ok:        esCorrecta
-  });
-
-  const fb = document.getElementById('feedback');
-  fb.className     = `feedback ${esCorrecta?'correcto':'incorrecto'}`;
-  fb.style.display = 'block';
-  document.getElementById('feedback-titulo').textContent =
-    esCorrecta ? '✓ ¡Correcto!' : '✗ Incorrecto';
-  document.getElementById('feedback-texto').textContent =
-    esCorrecta ? ej.fb_correcto : ej.fb_incorrecto;
-
-  const btnSig     = document.getElementById('btn-siguiente');
-  btnSig.style.display = 'block';
-  btnSig.textContent   = indice+1 < ejercicios.length
-    ? 'Siguiente pregunta →' : 'Ver mis resultados →';
+  historial.push({ pregunta: `P${indice+1} (${ej.sistema})`, seleccion, correcta: ej.correcta, ok: esCorrecta });
+  mostrarFeedback(esCorrecta, ej);
 }
 
 /* ══════════════════════════════════════════════════
-   SIGUIENTE / RESULTADOS / REINICIAR / SALIR
+   RESPONDER — ESCRITURA
+   ══════════════════════════════════════════════════ */
+function verificarEscritura() {
+  if (respondido) return;
+  const ej    = grupoActual[indice];
+  const input = document.getElementById('escritura-input');
+  const resp  = input.value.trim().toUpperCase();
+
+  if (!resp) { input.focus(); return; }
+  respondido = true;
+
+  const esCorrecta = resp === ej.correcta.trim().toUpperCase();
+  if (esCorrecta) puntaje++;
+
+  document.getElementById('lbl-score').textContent =
+    `${puntaje} correcta${puntaje!==1?'s':''}`;
+
+  input.disabled  = true;
+  input.className = 'escritura-input ' + (esCorrecta ? 'correcto' : 'incorrecto');
+  document.getElementById('btn-verificar').disabled = true;
+
+  historial.push({ pregunta: `P${indice+1} (${ej.sistema})`, seleccion: resp, correcta: ej.correcta, ok: esCorrecta });
+  mostrarFeedback(esCorrecta, ej);
+}
+
+/* ══════════════════════════════════════════════════
+   MOSTRAR FEEDBACK
+   ══════════════════════════════════════════════════ */
+function mostrarFeedback(esCorrecta, ej) {
+  const fb = document.getElementById('feedback');
+  fb.className     = `feedback ${esCorrecta ? 'correcto' : 'incorrecto'}`;
+  fb.style.display = 'block';
+  document.getElementById('feedback-titulo').textContent = esCorrecta ? '✓ ¡Correcto!' : '✗ Incorrecto';
+  document.getElementById('feedback-texto').textContent  = esCorrecta ? ej.fb_correcto : ej.fb_incorrecto;
+
+  const btnSig = document.getElementById('btn-siguiente');
+  btnSig.style.display = 'block';
+  btnSig.textContent   = indice + 1 < grupoActual.length ? 'Siguiente pregunta →' : 'Ver mis resultados →';
+}
+
+/* ══════════════════════════════════════════════════
+   SIGUIENTE / RESULTADOS
    ══════════════════════════════════════════════════ */
 function siguienteEjercicio() {
   indice++;
-  indice < ejercicios.length ? renderEjercicio() : mostrarResultados();
+  indice < grupoActual.length ? renderEjercicio() : mostrarResultados();
 }
 
 function mostrarResultados() {
-  const total = ejercicios.length;
-  const pct   = Math.round((puntaje/total)*100);
+  const total = grupoActual.length;
+  const pct   = Math.round((puntaje / total) * 100);
 
-  document.getElementById('res-icono').textContent  = pct>=80?"🏆":pct>=50?"💪":"📚";
+  document.getElementById('res-icono').textContent  = pct >= 80 ? "🏆" : pct >= 50 ? "💪" : "📚";
   document.getElementById('res-titulo').textContent =
-    pct>=80 ? "¡Excelente trabajo!"
-    : pct>=50 ? "¡Buen intento, sigue practicando!"
-    : "Sigue practicando, ¡vas a lograrlo!";
+    pct >= 80 ? "¡Excelente trabajo!" : pct >= 50 ? "¡Buen intento, sigue practicando!" : "Sigue practicando, ¡vas a lograrlo!";
   document.getElementById('res-alumno').textContent = usuarioActual;
   document.getElementById('res-puntaje').innerHTML  =
-    `${puntaje} <span>/ ${total} correcta${total!==1?'s':''} (${pct}%)</span>`;
+    `${puntaje} <span>/ ${total} correcta${total !== 1 ? 's' : ''} (${pct}%)</span>`;
 
   const lista = document.getElementById('lista-detalle');
   lista.innerHTML = '';
-  historial.forEach((h,i) => {
+  historial.forEach((h, i) => {
     const div = document.createElement('div');
     div.className = 'item-resultado';
     div.innerHTML = `
-      <div class="badge ${h.ok?'ok':'mal'}">${h.ok?'✓':'✗'}</div>
+      <div class="badge-r ${h.ok ? 'ok' : 'mal'}">${h.ok ? '✓' : '✗'}</div>
       <div>
         <div style="font-weight:600">${h.pregunta}</div>
         <div style="color:var(--texto-sub);font-size:.82rem;margin-top:2px">
           Tu respuesta: <strong>${h.seleccion}</strong>
-          ${!h.ok?` · Correcta: <strong>${h.correcta}</strong>`:''}
+          ${!h.ok ? ` · Correcta: <strong>${h.correcta}</strong>` : ''}
         </div>
       </div>`;
     lista.appendChild(div);
   });
 
-  enviarAForms(puntaje, total - puntaje, total, pct);
   mostrarPantalla('pantalla-resultados');
 }
 
-function reiniciar() { iniciarIntento(); }
-
 /* ══════════════════════════════════════════════════
-   ENVIAR DATOS A MICROSOFT FORMS
-   Forms → Power Automate → Excel SharePoint
+   REINICIAR / VOLVER / SALIR
    ══════════════════════════════════════════════════ */
-function enviarAForms(correctas, incorrectas, total, porcentaje) {
-  try {
-    const ahora = new Date();
-    const fecha = ahora.toLocaleDateString("es-CL");
-    const hora  = ahora.toLocaleTimeString("es-CL", { hour:"2-digit", minute:"2-digit", second:"2-digit" });
-
-    const FORMS_URL = "https://forms.office.com/Pages/ResponsePage.aspx?id=J4nXtdAlqUSDcNhuV8e6lpUEVbVXxktNloqFF6LW3OxUMlJOTDJJRURETjRRRDJZMUxFRkNVWVBEWS4u";
-
-    const params = new URLSearchParams({
-      r1c1: usuarioActual,
-      r2c1: fecha,
-      r3c1: hora,
-      r4c1: String(intentoNum),
-      r5c1: String(correctas),
-      r6c1: String(incorrectas),
-      r7c1: String(total),
-      r8c1: String(porcentaje) + "%"
-    });
-
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    iframe.src = FORMS_URL + "&" + params.toString();
-    document.body.appendChild(iframe);
-    setTimeout(() => { if (iframe.parentNode) iframe.parentNode.removeChild(iframe); }, 5000);
-
-  } catch(e) {
-    console.warn("No se pudo enviar a Forms:", e);
-  }
-}
-
+function reiniciar()      { iniciarGrupo(grupoKey); }
+function volverSelector() { mostrarPantalla('pantalla-selector'); }
 function salir() {
   usuarioActual = "";
   document.getElementById('input-usuario').value = '';
@@ -478,9 +781,6 @@ function salir() {
   mostrarPantalla('pantalla-login');
 }
 
-/* ══════════════════════════════════════════════════
-   INICIO
-   ══════════════════════════════════════════════════ */
 cargarUsuarios();
 </script>
 </body>
