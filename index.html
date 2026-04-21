@@ -536,6 +536,11 @@ const BANCO = {
    ESTADO
    ══════════════════════════════════════════════════ */
 let usuarios      = [];
+/* ══════════════════════════════════════════════════
+   ENDPOINT GOOGLE SHEETS — NO MODIFICAR
+   ══════════════════════════════════════════════════ */
+const SHEETS_URL = "https://script.google.com/macros/s/AKfycbxfd3v1_1hKsHsEog5UU9MsZLu9B8pNycHr70OkxIelnGgxqJyj4q_ER4yVCHfyoo91/exec";
+
 let usuarioActual = "";
 let grupoActual   = [];
 let grupoKey      = "";
@@ -544,6 +549,35 @@ let puntaje       = 0;
 let historial     = [];
 let respondido    = false;
 let intentoNum    = 0;
+let sesionInicio  = null;    // timestamp inicio de sesión
+let intentoInicio = null;    // timestamp inicio de intento
+
+/* ══════════════════════════════════════════════════
+   HELPERS DE FECHA / HORA
+   ══════════════════════════════════════════════════ */
+function fechaHoy() {
+  return new Date().toLocaleDateString('es-CL');
+}
+function horaAhora() {
+  return new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+/* ══════════════════════════════════════════════════
+   ENVIAR REGISTRO A GOOGLE SHEETS
+   Envío en segundo plano, no bloquea la UI
+   ══════════════════════════════════════════════════ */
+function enviarRegistro(datos) {
+  try {
+    fetch(SHEETS_URL, {
+      method: 'POST',
+      mode:   'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(datos)
+    }).catch(e => console.warn('Registro fallido:', e));
+  } catch(e) {
+    console.warn('Error registrando:', e);
+  }
+}
 
 /* ══════════════════════════════════════════════════
    CARGA DE USUARIOS
@@ -588,7 +622,18 @@ async function iniciarSesion() {
 
   errEl.style.display = "none";
   usuarioActual = encontrado.usuario;
+  sesionInicio  = Date.now();
   document.getElementById('chip-bienvenida').textContent = usuarioActual;
+
+  // Registrar inicio de sesión
+  enviarRegistro({
+    tipo:    "sesion",
+    usuario: usuarioActual,
+    fecha:   fechaHoy(),
+    hora:    horaAhora(),
+    evento:  "Inicio de sesión"
+  });
+
   mostrarPantalla('pantalla-selector');
 }
 
@@ -596,13 +641,14 @@ async function iniciarSesion() {
    INICIAR GRUPO
    ══════════════════════════════════════════════════ */
 function iniciarGrupo(key) {
-  grupoKey    = key;
-  grupoActual = [...BANCO[key]].sort(() => Math.random() - .5);
-  indice      = 0;
-  puntaje     = 0;
-  historial   = [];
-  respondido  = false;
+  grupoKey      = key;
+  grupoActual   = [...BANCO[key]].sort(() => Math.random() - .5);
+  indice        = 0;
+  puntaje       = 0;
+  historial     = [];
+  respondido    = false;
   intentoNum++;
+  intentoInicio = Date.now();
 
   document.getElementById('chip-usuario').textContent = usuarioActual;
   mostrarPantalla('pantalla-ejercicio');
@@ -766,6 +812,24 @@ function mostrarResultados() {
     lista.appendChild(div);
   });
 
+  // Calcular duración y registrar intento
+  const duracionSeg = Math.round((Date.now() - intentoInicio) / 1000);
+  const nombreGrupo = grupoKey === 'grupo1' ? 'Grupo 1 - Permanente/Temporal' : 'Grupo 2 - Dentición Mixta';
+
+  enviarRegistro({
+    tipo:          "intento",
+    usuario:       usuarioActual,
+    fecha:         fechaHoy(),
+    hora:          horaAhora(),
+    grupo:         nombreGrupo,
+    intento:       intentoNum,
+    correctas:     puntaje,
+    incorrectas:   total - puntaje,
+    total:         total,
+    porcentaje:    pct,
+    duracion_seg:  duracionSeg
+  });
+
   mostrarPantalla('pantalla-resultados');
 }
 
@@ -775,7 +839,21 @@ function mostrarResultados() {
 function reiniciar()      { iniciarGrupo(grupoKey); }
 function volverSelector() { mostrarPantalla('pantalla-selector'); }
 function salir() {
+  // Registrar cierre de sesión con duración total
+  if (usuarioActual && sesionInicio) {
+    const duracionSeg = Math.round((Date.now() - sesionInicio) / 1000);
+    enviarRegistro({
+      tipo:         "sesion",
+      usuario:      usuarioActual,
+      fecha:        fechaHoy(),
+      hora:         horaAhora(),
+      evento:       "Cierre de sesión",
+      duracion_seg: duracionSeg
+    });
+  }
+
   usuarioActual = "";
+  sesionInicio  = null;
   document.getElementById('input-usuario').value = '';
   document.getElementById('input-pass').value    = '';
   mostrarPantalla('pantalla-login');
