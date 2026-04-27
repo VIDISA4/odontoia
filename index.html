@@ -152,6 +152,19 @@
     .udd-badge { margin-top: 20px; font-size: 0.75rem; color: var(--texto-sub); text-align: center; }
     .pantalla        { display: none; }
     .pantalla.activa { display: block; }
+
+    /* MODAL PROGRESO */
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; z-index:200; padding:20px; animation:fadeIn .2s ease; }
+    .modal-card { background:var(--blanco); border-radius:var(--radio); padding:28px 26px; width:100%; max-width:460px; box-shadow:0 8px 36px rgba(0,0,0,.22); }
+    .modal-titulo { font-size:1.1rem; font-weight:700; color:var(--azul); margin-bottom:8px; }
+    .modal-desc { font-size:0.87rem; color:var(--texto-sub); margin-bottom:22px; line-height:1.55; }
+    .modal-acciones { display:flex; flex-direction:column; gap:10px; }
+
+    /* BADGES DE PROGRESO en las tarjetas del selector */
+    .badge-progreso { display:none; margin-top:8px; font-size:0.76rem; padding:3px 10px; border-radius:99px; align-items:center; gap:4px; font-weight:600; }
+    .badge-progreso.en-progreso { background:#fef3c7; color:var(--amarillo); }
+    .badge-progreso.completado  { background:#dcfce7; color:var(--verde);    }
+
     @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
   </style>
 </head>
@@ -187,11 +200,12 @@
 
     <div class="grupo-cards">
 
-      <div class="grupo-card g1" onclick="iniciarGrupo('grupo1')">
+      <div class="grupo-card g1" onclick="seleccionarGrupo('grupo1')">
         <div class="grupo-icono">🦷</div>
         <div class="grupo-info">
           <div class="grupo-nombre">Grupo 1 — Dentición Permanente y Temporal</div>
           <div class="grupo-desc">Ejercicios de identificación con los sistemas FDI y ADA, superficies y combinados.</div>
+          <div id="badge-grupo1" class="badge-progreso"></div>
           <div class="grupo-pills">
             <span class="pill pill-azul">30 ejercicios</span>
             <span class="pill pill-verde">Selección múltiple</span>
@@ -200,11 +214,12 @@
         </div>
       </div>
 
-      <div class="grupo-card g2" onclick="iniciarGrupo('grupo2')">
+      <div class="grupo-card g2" onclick="seleccionarGrupo('grupo2')">
         <div class="grupo-icono">🪥</div>
         <div class="grupo-info">
           <div class="grupo-nombre">Grupo 2 — Dentición Mixta</div>
           <div class="grupo-desc">Ejercicios avanzados con dentición permanente y temporal mezcladas.</div>
+          <div id="badge-grupo2" class="badge-progreso"></div>
           <div class="grupo-pills">
             <span class="pill pill-amari">14 ejercicios</span>
             <span class="pill pill-verde">Selección múltiple</span>
@@ -270,6 +285,21 @@
     <div class="acciones-resultado">
       <button class="btn-secondary" onclick="reiniciar()">↺ Repetir grupo</button>
       <button class="btn-primary"   onclick="volverSelector()">Elegir otro grupo</button>
+    </div>
+  </div>
+
+
+  <!-- ══════════ MODAL PROGRESO ══════════ -->
+  <div id="modal-progreso" style="display:none">
+    <div class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-titulo" id="modal-titulo"></div>
+        <div class="modal-desc"   id="modal-desc"></div>
+        <div class="modal-acciones">
+          <button class="btn-primary"   id="modal-btn-principal"  onclick=""></button>
+          <button class="btn-secondary" id="modal-btn-secundario" onclick=""></button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -697,8 +727,8 @@ let puntaje       = 0;
 let historial     = [];
 let respondido    = false;
 let intentoNum    = 0;
-let sesionInicio  = null;    // timestamp inicio de sesión
-let intentoInicio = null;    // timestamp inicio de intento
+let sesionInicio  = null;
+let intentoInicio = null;
 
 /* ══════════════════════════════════════════════════
    HELPERS DE FECHA / HORA
@@ -712,7 +742,6 @@ function horaAhora() {
 
 /* ══════════════════════════════════════════════════
    ENVIAR REGISTRO A GOOGLE SHEETS
-   Envío en segundo plano, no bloquea la UI
    ══════════════════════════════════════════════════ */
 function enviarRegistro(datos) {
   try {
@@ -725,6 +754,147 @@ function enviarRegistro(datos) {
   } catch(e) {
     console.warn('Error registrando:', e);
   }
+}
+
+/* ══════════════════════════════════════════════════
+   LOCALSTORAGE — PROGRESO POR USUARIO Y GRUPO
+   ══════════════════════════════════════════════════ */
+function progresoKey(key) {
+  return `odontoia_${usuarioActual}_${key}`;
+}
+
+function leerProgreso(key) {
+  try {
+    const raw = localStorage.getItem(progresoKey(key));
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+function guardarProgreso() {
+  // Guardamos índices del orden aleatorio para restaurarlo igual
+  const idx = grupoActual.map(ej => BANCO[grupoKey].indexOf(ej));
+  const datos = {
+    estado:        'en_progreso',
+    ejerciciosIdx: idx,
+    indice:        indice,
+    puntaje:       puntaje,
+    historial:     historial,
+    guardadoEn:    new Date().toISOString()
+  };
+  try { localStorage.setItem(progresoKey(grupoKey), JSON.stringify(datos)); } catch(e) {}
+}
+
+function guardarCompletado() {
+  const datos = {
+    estado:    'completado',
+    puntaje:   puntaje,
+    total:     grupoActual.length,
+    pct:       Math.round((puntaje / grupoActual.length) * 100),
+    historial: historial
+  };
+  try { localStorage.setItem(progresoKey(grupoKey), JSON.stringify(datos)); } catch(e) {}
+}
+
+function borrarProgreso(key) {
+  try { localStorage.removeItem(progresoKey(key)); } catch(e) {}
+}
+
+/* ══════════════════════════════════════════════════
+   BADGES DE PROGRESO EN SELECTOR
+   ══════════════════════════════════════════════════ */
+function actualizarBadgesSelector() {
+  ['grupo1', 'grupo2'].forEach(key => {
+    const badge = document.getElementById(`badge-${key}`);
+    if (!badge) return;
+    const datos = leerProgreso(key);
+    if (!datos) {
+      badge.style.display = 'none';
+      return;
+    }
+    badge.style.display = 'inline-flex';
+    if (datos.estado === 'completado') {
+      badge.className     = 'badge-progreso completado';
+      badge.textContent   = `✓ Completado — ${datos.pct}%`;
+    } else {
+      const total         = BANCO[key].length;
+      badge.className     = 'badge-progreso en-progreso';
+      badge.textContent   = `📍 En progreso — Pregunta ${datos.indice + 1} de ${total}`;
+    }
+  });
+}
+
+/* ══════════════════════════════════════════════════
+   MODAL — helper genérico
+   ══════════════════════════════════════════════════ */
+function mostrarModal({ titulo, desc, btnPrincipal, onPrincipal, btnSecundario, onSecundario }) {
+  document.getElementById('modal-titulo').textContent = titulo;
+  document.getElementById('modal-desc').textContent   = desc;
+  const btnP = document.getElementById('modal-btn-principal');
+  const btnS = document.getElementById('modal-btn-secundario');
+  btnP.textContent = btnPrincipal;
+  btnP.onclick     = onPrincipal;
+  btnS.textContent = btnSecundario;
+  btnS.onclick     = onSecundario;
+  document.getElementById('modal-progreso').style.display = 'flex';
+}
+
+function cerrarModal() {
+  document.getElementById('modal-progreso').style.display = 'none';
+}
+
+/* ══════════════════════════════════════════════════
+   SELECCIONAR GRUPO (chequea progreso guardado)
+   ══════════════════════════════════════════════════ */
+function seleccionarGrupo(key) {
+  const datos       = leerProgreso(key);
+  const nombreGrupo = key === 'grupo1' ? 'Grupo 1' : 'Grupo 2';
+
+  if (!datos) {
+    iniciarGrupo(key);
+    return;
+  }
+
+  if (datos.estado === 'completado') {
+    mostrarModal({
+      titulo:        `${nombreGrupo} completado 🏆`,
+      desc:          `Tu resultado anterior fue ${datos.puntaje} de ${datos.total} correctas (${datos.pct}%). ¿Quieres volver a intentarlo desde cero?`,
+      btnPrincipal:  '↺ Repetir desde el inicio',
+      onPrincipal:   () => { cerrarModal(); borrarProgreso(key); iniciarGrupo(key); },
+      btnSecundario:  '← Volver al selector',
+      onSecundario:  () => cerrarModal()
+    });
+    return;
+  }
+
+  // Estado: en_progreso
+  const pregActual = datos.indice + 1;
+  const total      = BANCO[key].length;
+  mostrarModal({
+    titulo:        '¡Tienes progreso guardado 📍',
+    desc:          `Quedaste en la Pregunta ${pregActual} de ${total}, con ${datos.puntaje} correcta${datos.puntaje !== 1 ? 's' : ''} hasta ahora. ¿Deseas continuar o empezar desde el inicio?`,
+    btnPrincipal:  `Continuar desde la Pregunta ${pregActual}`,
+    onPrincipal:   () => { cerrarModal(); continuarProgreso(key, datos); },
+    btnSecundario:  '↺ Empezar desde el inicio',
+    onSecundario:  () => { cerrarModal(); borrarProgreso(key); iniciarGrupo(key); }
+  });
+}
+
+/* ══════════════════════════════════════════════════
+   CONTINUAR PROGRESO GUARDADO
+   ══════════════════════════════════════════════════ */
+function continuarProgreso(key, datos) {
+  grupoKey      = key;
+  grupoActual   = datos.ejerciciosIdx.map(i => BANCO[key][i]);
+  indice        = datos.indice;
+  puntaje       = datos.puntaje;
+  historial     = datos.historial;
+  respondido    = false;
+  intentoNum++;
+  intentoInicio = Date.now();
+
+  document.getElementById('chip-usuario').textContent = usuarioActual;
+  mostrarPantalla('pantalla-ejercicio');
+  renderEjercicio();
 }
 
 /* ══════════════════════════════════════════════════
@@ -773,7 +943,6 @@ async function iniciarSesion() {
   sesionInicio  = Date.now();
   document.getElementById('chip-bienvenida').textContent = usuarioActual;
 
-  // Registrar inicio de sesión
   enviarRegistro({
     tipo:    "sesion",
     usuario: usuarioActual,
@@ -782,11 +951,12 @@ async function iniciarSesion() {
     evento:  "Inicio de sesión"
   });
 
+  actualizarBadgesSelector();   // ← mostrar badges al entrar
   mostrarPantalla('pantalla-selector');
 }
 
 /* ══════════════════════════════════════════════════
-   INICIAR GRUPO
+   INICIAR GRUPO — siempre desde cero
    ══════════════════════════════════════════════════ */
 function iniciarGrupo(key) {
   grupoKey      = key;
@@ -811,29 +981,24 @@ function renderEjercicio() {
   const ej    = grupoActual[indice];
   const total = grupoActual.length;
 
-  // Progreso
   document.getElementById('lbl-pregunta').textContent = `Pregunta ${indice+1} de ${total}`;
   document.getElementById('lbl-score').textContent    = `${puntaje} correcta${puntaje!==1?'s':''}`;
   document.getElementById('barra').style.width        = `${(indice/total)*100}%`;
 
-  // Tag sistema
   const tagEl = document.getElementById('tag-sistema');
   tagEl.textContent = ej.sistema;
   tagEl.className   = 'tag-sistema' + (ej.tipo === 'escritura' ? ' tag-escritura' : '');
 
   document.getElementById('enunciado').textContent = ej.enunciado;
 
-  // Imagen
   const imgWrap = document.getElementById('img-wrap');
   imgWrap.innerHTML = `<img src="${ej.imagen}" alt="Ejercicio ${indice+1}"
     onerror="this.parentElement.innerHTML='<p style=color:var(--texto-sub);padding:20px;text-align:center;font-size:.85rem>⏳ Imagen próximamente disponible</p>'">`;
 
-  // Ocultar feedback y siguiente
   const fb = document.getElementById('feedback');
   fb.className = 'feedback'; fb.style.display = 'none';
   document.getElementById('btn-siguiente').style.display = 'none';
 
-  // Mostrar tipo correcto
   const divAlt = document.getElementById('alternativas');
   const divEsc = document.getElementById('escritura-wrap');
 
@@ -929,7 +1094,12 @@ function mostrarFeedback(esCorrecta, ej) {
    ══════════════════════════════════════════════════ */
 function siguienteEjercicio() {
   indice++;
-  indice < grupoActual.length ? renderEjercicio() : mostrarResultados();
+  if (indice < grupoActual.length) {
+    guardarProgreso();   // ← guardar avance después de cada pregunta
+    renderEjercicio();
+  } else {
+    mostrarResultados();
+  }
 }
 
 function mostrarResultados() {
@@ -960,22 +1130,25 @@ function mostrarResultados() {
     lista.appendChild(div);
   });
 
-  // Calcular duración y registrar intento
+  // Guardar estado completado y refrescar badges
+  guardarCompletado();
+  actualizarBadgesSelector();
+
   const duracionSeg = Math.round((Date.now() - intentoInicio) / 1000);
   const nombreGrupo = grupoKey === 'grupo1' ? 'Grupo 1 - Permanente/Temporal' : 'Grupo 2 - Dentición Mixta';
 
   enviarRegistro({
-    tipo:          "intento",
-    usuario:       usuarioActual,
-    fecha:         fechaHoy(),
-    hora:          horaAhora(),
-    grupo:         nombreGrupo,
-    intento:       intentoNum,
-    correctas:     puntaje,
-    incorrectas:   total - puntaje,
-    total:         total,
-    porcentaje:    pct,
-    duracion_seg:  duracionSeg
+    tipo:         "intento",
+    usuario:      usuarioActual,
+    fecha:        fechaHoy(),
+    hora:         horaAhora(),
+    grupo:        nombreGrupo,
+    intento:      intentoNum,
+    correctas:    puntaje,
+    incorrectas:  total - puntaje,
+    total:        total,
+    porcentaje:   pct,
+    duracion_seg: duracionSeg
   });
 
   mostrarPantalla('pantalla-resultados');
@@ -984,10 +1157,26 @@ function mostrarResultados() {
 /* ══════════════════════════════════════════════════
    REINICIAR / VOLVER / SALIR
    ══════════════════════════════════════════════════ */
-function reiniciar()      { iniciarGrupo(grupoKey); }
-function volverSelector() { mostrarPantalla('pantalla-selector'); }
+function reiniciar() {
+  borrarProgreso(grupoKey);   // borrar progreso al repetir
+  iniciarGrupo(grupoKey);
+}
+
+function volverSelector() {
+  // Si está a mitad, guardar progreso antes de salir
+  if (grupoKey && indice > 0 && indice < grupoActual.length) {
+    guardarProgreso();
+  }
+  actualizarBadgesSelector();
+  mostrarPantalla('pantalla-selector');
+}
+
 function salir() {
-  // Registrar cierre de sesión con duración total
+  // Guardar si quedó a mitad
+  if (grupoKey && indice > 0 && indice < grupoActual.length) {
+    guardarProgreso();
+  }
+
   if (usuarioActual && sesionInicio) {
     const duracionSeg = Math.round((Date.now() - sesionInicio) / 1000);
     enviarRegistro({
@@ -1002,12 +1191,15 @@ function salir() {
 
   usuarioActual = "";
   sesionInicio  = null;
+  grupoKey      = "";
+  indice        = 0;
   document.getElementById('input-usuario').value = '';
   document.getElementById('input-pass').value    = '';
   mostrarPantalla('pantalla-login');
 }
 
 cargarUsuarios();
+
 </script>
 </body>
 </html>
