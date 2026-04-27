@@ -794,7 +794,7 @@ function actualizarEstadoSelector() {
     const comp = cargarCompletado(key);
     if (prog) {
       const total = BANCO[key].length;
-      el.innerHTML = `<span class="estado-progreso en-curso">📌 En curso: ${prog.indice}/${total}</span>`;
+      el.innerHTML = `<span class="estado-progreso en-curso">📌 En curso: pregunta ${prog.indice + 1} de ${total}</span>`;
     } else if (comp) {
       el.innerHTML = `<span class="estado-progreso completo">✓ Completado: ${comp.puntaje}/${comp.total} (${comp.pct}%)</span>`;
     }
@@ -941,7 +941,6 @@ function responderSeleccion(seleccion, botonPresionado, ej) {
   });
 
   historial.push({ pregunta: `P${indice+1} (${ej.sistema})`, seleccion, correcta: ej.correcta, ok: esCorrecta });
-  guardarProgreso(grupoKey);
   mostrarFeedback(esCorrecta, ej);
 }
 
@@ -968,7 +967,6 @@ function verificarEscritura() {
   document.getElementById('btn-verificar').disabled = true;
 
   historial.push({ pregunta: `P${indice+1} (${ej.sistema})`, seleccion: resp, correcta: ej.correcta, ok: esCorrecta });
-  guardarProgreso(grupoKey);
   mostrarFeedback(esCorrecta, ej);
 }
 
@@ -992,7 +990,12 @@ function mostrarFeedback(esCorrecta, ej) {
    ══════════════════════════════════════════════════ */
 function siguienteEjercicio() {
   indice++;
-  indice < grupoActual.length ? renderEjercicio() : mostrarResultados();
+  if (indice < grupoActual.length) {
+    guardarProgreso(grupoKey);   // guarda en qué pregunta está ahora
+    renderEjercicio();
+  } else {
+    mostrarResultados();
+  }
 }
 
 function mostrarResultados() {
