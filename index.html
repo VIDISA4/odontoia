@@ -152,45 +152,6 @@
     .udd-badge { margin-top: 20px; font-size: 0.75rem; color: var(--texto-sub); text-align: center; }
     .pantalla        { display: none; }
     .pantalla.activa { display: block; }
-
-    /* Badge de estado de progreso */
-    .estado-progreso {
-      display: inline-flex; align-items: center; gap: 4px;
-      border-radius: 99px; padding: 2px 10px;
-      font-size: 0.72rem; font-weight: 700;
-      margin-top: 4px;
-    }
-    .estado-progreso.en-curso  { background: #fef3c7; color: var(--amarillo); }
-    .estado-progreso.completo  { background: #dcfce7; color: var(--verde); }
-
-    /* Pantalla de continuar */
-    .continuar-card { text-align: center; padding: 28px 24px; }
-    .continuar-icono { font-size: 3rem; margin-bottom: 12px; }
-    .continuar-titulo {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.4rem; color: var(--azul); margin-bottom: 8px;
-    }
-    .continuar-desc { font-size: 0.92rem; color: var(--texto-sub); margin-bottom: 22px; line-height: 1.5; }
-    .continuar-stats {
-      background: var(--gris-bg); border-radius: 10px;
-      padding: 14px; margin-bottom: 22px;
-      display: flex; justify-content: space-around;
-    }
-    .stat-item { text-align: center; }
-    .stat-num { font-size: 1.6rem; font-weight: 700; color: var(--azul-claro); }
-    .stat-lbl { font-size: 0.72rem; color: var(--texto-sub); text-transform: uppercase; letter-spacing: .04em; }
-
-    /* Resultado anterior */
-    .resultado-prev-card {
-      background: #f0fdf4; border: 1.5px solid #86efac;
-      border-radius: 10px; padding: 14px; margin-bottom: 18px;
-      text-align: center;
-    }
-    .resultado-prev-card .num {
-      font-size: 1.8rem; font-weight: 700; color: var(--verde);
-    }
-    .resultado-prev-card .desc { font-size: 0.82rem; color: #166534; }
-
     @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
   </style>
 </head>
@@ -232,11 +193,10 @@
           <div class="grupo-nombre">Grupo 1 — Dentición Permanente y Temporal</div>
           <div class="grupo-desc">Ejercicios de identificación con los sistemas FDI y ADA, superficies y combinados.</div>
           <div class="grupo-pills">
-            <span class="pill pill-azul">21 ejercicios</span>
+            <span class="pill pill-azul">30 ejercicios</span>
             <span class="pill pill-verde">Selección múltiple</span>
             <span class="pill pill-amari">Escritura</span>
           </div>
-          <div id="estado-grupo1"></div>
         </div>
       </div>
 
@@ -246,70 +206,12 @@
           <div class="grupo-nombre">Grupo 2 — Dentición Mixta</div>
           <div class="grupo-desc">Ejercicios avanzados con dentición permanente y temporal mezcladas.</div>
           <div class="grupo-pills">
-            <span class="pill pill-amari">6 ejercicios</span>
+            <span class="pill pill-amari">14 ejercicios</span>
             <span class="pill pill-verde">Selección múltiple</span>
           </div>
-          <div id="estado-grupo2"></div>
         </div>
       </div>
 
-    </div>
-  </div>
-
-
-  <!-- ══════════ CONTINUAR / EMPEZAR DE 0 ══════════ -->
-  <div class="card pantalla" id="pantalla-continuar">
-    <div class="continuar-card">
-      <div class="continuar-icono">📌</div>
-      <div class="continuar-titulo" id="continuar-titulo">Tienes un ejercicio en curso</div>
-      <p class="continuar-desc">¿Quieres continuar donde lo dejaste o empezar de nuevo?</p>
-
-      <div class="continuar-stats">
-        <div class="stat-item">
-          <div class="stat-num" id="stat-pregunta">0</div>
-          <div class="stat-lbl">Pregunta</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num" id="stat-correctas">0</div>
-          <div class="stat-lbl">Correctas</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num" id="stat-restantes">0</div>
-          <div class="stat-lbl">Restantes</div>
-        </div>
-      </div>
-
-      <button class="btn-primary" onclick="continuarProgreso()" style="margin-bottom:10px">
-        ▶ Continuar donde quedé
-      </button>
-      <button class="btn-secondary" onclick="empezarDeCero()">
-        ↺ Empezar de cero
-      </button>
-
-      <div style="margin-top:14px">
-        <button class="btn-volver" onclick="volverSelector()">← Volver atrás</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════ COMPLETADO PREVIAMENTE ══════════ -->
-  <div class="card pantalla" id="pantalla-completado-prev">
-    <div class="continuar-card">
-      <div class="continuar-icono">🏆</div>
-      <div class="continuar-titulo">¡Ya completaste este grupo!</div>
-      <p class="continuar-desc">Aquí está tu mejor resultado anterior:</p>
-
-      <div class="resultado-prev-card">
-        <div class="num" id="prev-puntaje">0/0</div>
-        <div class="desc" id="prev-fecha">Última vez: —</div>
-      </div>
-
-      <button class="btn-primary" onclick="empezarDeCero()" style="margin-bottom:10px">
-        🔄 Hacer de nuevo
-      </button>
-      <div style="margin-top:14px">
-        <button class="btn-volver" onclick="volverSelector()">← Volver atrás</button>
-      </div>
     </div>
   </div>
 
@@ -569,6 +471,84 @@ const BANCO = {
       correcta: "1.5",
       fb_correcto:   "¡Correcto! El diente 1.5 es el segundo premolar del cuadrante superior derecho. El cuadrante 1 en FDI es el maxilar superior derecho y el 5 indica el segundo premolar.",
       fb_incorrecto: "Incorrecto. La respuesta es 1.5 (segundo premolar superior derecho). El cuadrante 1 en FDI es el maxilar superior derecho y el número 5 corresponde al segundo premolar."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI / ADA",
+      enunciado: "Para la siguiente imagen, seleccione la alternativa correcta usando como referencia la flecha.",
+      imagen: IMG1 + "22.png",
+      alternativas: ["1.7", "2", "16", "2.8"],
+      correcta: "2",
+      fb_correcto:   "¡Correcto! El diente 2 en ADA corresponde al segundo molar superior derecho. En el sistema ADA la numeración va del 1 al 32 en sentido horario.",
+      fb_incorrecto: "Incorrecto. La respuesta es 2 (segundo molar superior derecho en ADA). En ADA la numeración va del 1 al 32 comenzando por el tercer molar superior derecho."
+    },
+    {
+      tipo: "seleccion", sistema: "COMBINADO",
+      enunciado: "Seleccione la alternativa correcta que indique el diente (flecha) y la superficie (punto) correctas.",
+      imagen: IMG1 + "23.png",
+      alternativas: ["4.3 lingual", "3.3 incisal", "22 incisal", "27 lingual"],
+      correcta: "27 lingual",
+      fb_correcto:   "¡Correcto! El diente 27 en ADA es el segundo premolar inferior izquierdo y la superficie LINGUAL es la cara que mira hacia la lengua.",
+      fb_incorrecto: "Incorrecto. La respuesta es 27 lingual. El diente 27 en ADA es el segundo premolar inferior izquierdo y la superficie lingual es la cara que mira hacia la lengua."
+    },
+    {
+      tipo: "escritura", sistema: "ADA",
+      enunciado: "Escriba el número ADA del diente señalado con la flecha en la imagen.",
+      imagen: IMG1 + "24.png",
+      correcta: "2",
+      fb_correcto:   "¡Correcto! El diente 2 en ADA corresponde al segundo molar superior derecho. En el sistema ADA la numeración va del 1 al 32 en sentido horario.",
+      fb_incorrecto: "Incorrecto. La respuesta correcta es 2 (segundo molar superior derecho). En ADA la numeración va del 1 al 32 comenzando por el tercer molar superior derecho."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI / ADA",
+      enunciado: "Para la siguiente imagen, seleccione la alternativa correcta usando como referencia la flecha.",
+      imagen: IMG1 + "25.png",
+      alternativas: ["4.5", "4.4", "29", "28"],
+      correcta: "29",
+      fb_correcto:   "¡Correcto! El diente 29 en ADA corresponde al segundo premolar inferior derecho. En ADA la numeración va del 1 al 32 en sentido horario.",
+      fb_incorrecto: "Incorrecto. La respuesta es 29 (segundo premolar inferior derecho en ADA). En ADA la numeración va del 1 al 32 en sentido horario."
+    },
+    {
+      tipo: "seleccion", sistema: "COMBINADO",
+      enunciado: "Seleccione la alternativa correcta que indique el diente (flecha) y la superficie (punto) correctas.",
+      imagen: IMG1 + "26.png",
+      alternativas: ["1.3 distal", "2.3 mesial", "11 distal", "6 mesial"],
+      correcta: "6 mesial",
+      fb_correcto:   "¡Correcto! El diente 6 en ADA es el primer molar superior derecho y la superficie MESIAL es la cara más cercana a la línea media.",
+      fb_incorrecto: "Incorrecto. La respuesta es 6 mesial. El diente 6 en ADA es el primer molar superior derecho y la superficie mesial es la cara más cercana a la línea media."
+    },
+    {
+      tipo: "escritura", sistema: "FDI",
+      enunciado: "Escriba el número FDI del diente señalado con la flecha en la imagen.",
+      imagen: IMG1 + "27.png",
+      correcta: "4.6",
+      fb_correcto:   "¡Correcto! El diente 4.6 es el primer molar del cuadrante inferior derecho. El cuadrante 4 en FDI es la mandíbula derecha y el 6 indica el primer molar.",
+      fb_incorrecto: "Incorrecto. La respuesta correcta es 4.6 (primer molar inferior derecho). El cuadrante 4 en FDI es la mandíbula derecha y el número 6 corresponde al primer molar."
+    },
+    {
+      tipo: "seleccion", sistema: "COMBINADO",
+      enunciado: "Seleccione la alternativa correcta que indique el diente (flecha) y la superficie (punto) correctas.",
+      imagen: IMG1 + "28.png",
+      alternativas: ["28 oclusal", "3.5 lingual", "4.5 incisal", "21 lingual"],
+      correcta: "21 lingual",
+      fb_correcto:   "¡Correcto! El diente 21 en ADA es el primer premolar inferior izquierdo y la superficie LINGUAL es la cara que mira hacia la lengua.",
+      fb_incorrecto: "Incorrecto. La respuesta es 21 lingual. El diente 21 en ADA es el primer premolar inferior izquierdo y la superficie lingual es la cara que mira hacia la lengua."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI / ADA",
+      enunciado: "Para la siguiente imagen, seleccione la alternativa correcta usando como referencia la flecha.",
+      imagen: IMG1 + "29.png",
+      alternativas: ["2.1", "2.8", "16", "1"],
+      correcta: "1",
+      fb_correcto:   "¡Correcto! El diente 1 en ADA corresponde al tercer molar superior derecho. En ADA la numeración comienza por el tercer molar superior derecho con el número 1.",
+      fb_incorrecto: "Incorrecto. La respuesta es 1 (tercer molar superior derecho en ADA). En el sistema ADA la numeración comienza con el número 1 en el tercer molar superior derecho."
+    },
+    {
+      tipo: "escritura", sistema: "ADA",
+      enunciado: "Escriba la letra ADA del diente señalado con la flecha en la imagen.",
+      imagen: IMG1 + "30.png",
+      correcta: "N",
+      fb_correcto:   "¡Correcto! La letra N en ADA corresponde al canino temporal inferior izquierdo. En ADA la dentición temporal usa letras de la A a la T.",
+      fb_incorrecto: "Incorrecto. La respuesta correcta es N (canino temporal inferior izquierdo). En ADA la dentición temporal se identifica con letras de la A a la T."
     }
   ],
 
@@ -626,6 +606,76 @@ const BANCO = {
       correcta: "4.6",
       fb_correcto:   "¡Correcto! El diente 4.6 es el primer molar permanente del cuadrante inferior derecho. También llamado 'molar de los seis años', es clave en el desarrollo oclusal.",
       fb_incorrecto: "Incorrecto. La respuesta es 4.6 (primer molar permanente inferior derecho). Este diente erupciona alrededor de los 6 años y es clave en el desarrollo oclusal."
+    },
+    {
+      tipo: "seleccion", sistema: "ADA — Mixta",
+      enunciado: "Dentición mixta. Seleccione la alternativa correcta usando como referencia la flecha.",
+      imagen: IMG2 + "7.png",
+      alternativas: ["23", "24", "25", "P"],
+      correcta: "P",
+      fb_correcto:   "¡Correcto! La letra P en ADA corresponde al primer molar temporal inferior izquierdo. En dentición mixta los temporales conviven con permanentes.",
+      fb_incorrecto: "Incorrecto. La respuesta es P (primer molar temporal inferior izquierdo). En ADA la dentición temporal usa letras de la A a la T."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI / ADA — Mixta",
+      enunciado: "Dentición mixta. Seleccione la alternativa correcta usando como referencia la flecha.",
+      imagen: IMG2 + "8.png",
+      alternativas: ["R", "6.3", "27", "3.3"],
+      correcta: "6.3",
+      fb_correcto:   "¡Correcto! El diente 6.3 en FDI es el canino temporal inferior izquierdo. En dentición mixta el cuadrante 6 corresponde a la mandíbula izquierda en dentición temporal.",
+      fb_incorrecto: "Incorrecto. La respuesta es 6.3 (canino temporal inferior izquierdo). El cuadrante 6 en FDI es la mandíbula izquierda en dentición temporal."
+    },
+    {
+      tipo: "seleccion", sistema: "COMBINADO — Mixta",
+      enunciado: "Dentición mixta. Seleccione la alternativa correcta que indique el diente (flecha) y la superficie (punto) correctas.",
+      imagen: IMG2 + "9.png",
+      alternativas: ["7.4 distal", "4.6 mesial", "4.4 distal", "8.4 distal"],
+      correcta: "8.4 distal",
+      fb_correcto:   "¡Correcto! El diente 8.4 en FDI es el primer molar temporal inferior derecho y la superficie DISTAL es la cara alejada de la línea media.",
+      fb_incorrecto: "Incorrecto. La respuesta es 8.4 distal. El cuadrante 8 en FDI es la mandíbula derecha en dentición temporal y la superficie distal es la cara alejada de la línea media."
+    },
+    {
+      tipo: "seleccion", sistema: "COMBINADO — Mixta",
+      enunciado: "Dentición mixta. Seleccione la alternativa correcta que indique el diente (flecha) y la superficie (punto) correctas.",
+      imagen: IMG2 + "10.png",
+      alternativas: ["3.6 oclusal", "7.5 oclusal", "S oclusal", "3.6 mesial"],
+      correcta: "S oclusal",
+      fb_correcto:   "¡Correcto! La letra S en ADA es el primer molar temporal inferior izquierdo y la superficie OCLUSAL es la cara de masticación.",
+      fb_incorrecto: "Incorrecto. La respuesta es S oclusal. La letra S en ADA es el primer molar temporal inferior izquierdo y la superficie oclusal es la cara de masticación."
+    },
+    {
+      tipo: "seleccion", sistema: "FDI / ADA — Mixta",
+      enunciado: "Dentición mixta. Para la siguiente imagen, seleccione la alternativa correcta usando como referencia la flecha.",
+      imagen: IMG2 + "11.png",
+      alternativas: ["1.6", "A", "B", "2.6"],
+      correcta: "B",
+      fb_correcto:   "¡Correcto! La letra B en ADA corresponde al segundo molar temporal superior derecho. En ADA la dentición temporal usa letras de la A a la T.",
+      fb_incorrecto: "Incorrecto. La respuesta es B (segundo molar temporal superior derecho). En ADA la dentición temporal se nombra con letras de la A a la T."
+    },
+    {
+      tipo: "escritura", sistema: "ADA — Mixta",
+      enunciado: "Dentición mixta. Escriba el número o letra ADA según corresponda, del diente señalado con la flecha en la imagen.",
+      imagen: IMG2 + "12.png",
+      correcta: "19",
+      fb_correcto:   "¡Correcto! El diente 19 en ADA es el primer molar permanente inferior izquierdo. En dentición mixta los permanentes ya están erupcionados junto a los temporales.",
+      fb_incorrecto: "Incorrecto. La respuesta correcta es 19 (primer molar permanente inferior izquierdo). En ADA la numeración va del 1 al 32 en sentido horario."
+    },
+    {
+      tipo: "seleccion", sistema: "COMBINADO — Mixta",
+      enunciado: "Dentición mixta. Seleccione la alternativa correcta que indique el diente (flecha) y la superficie (punto) correctas.",
+      imagen: IMG2 + "13.png",
+      alternativas: ["7.2 mesial", "N mesial", "3.2 mesial", "26 vestibular"],
+      correcta: "N mesial",
+      fb_correcto:   "¡Correcto! La letra N en ADA es el canino temporal inferior izquierdo y la superficie MESIAL es la cara más cercana a la línea media.",
+      fb_incorrecto: "Incorrecto. La respuesta es N mesial. La letra N en ADA es el canino temporal inferior izquierdo y la superficie mesial es la cara más cercana a la línea media."
+    },
+    {
+      tipo: "escritura", sistema: "FDI — Mixta",
+      enunciado: "Dentición mixta. Escriba el número FDI del diente señalado con la flecha en la imagen.",
+      imagen: IMG2 + "14.png",
+      correcta: "8.4",
+      fb_correcto:   "¡Correcto! El diente 8.4 es el primer molar temporal del cuadrante inferior derecho. En FDI el cuadrante 8 corresponde a la mandíbula derecha en dentición temporal.",
+      fb_incorrecto: "Incorrecto. La respuesta correcta es 8.4 (primer molar temporal inferior derecho). El cuadrante 8 en FDI es la mandíbula derecha en dentición temporal."
     }
   ]
 };
@@ -732,96 +782,13 @@ async function iniciarSesion() {
     evento:  "Inicio de sesión"
   });
 
-  actualizarEstadoSelector();
   mostrarPantalla('pantalla-selector');
 }
 
 /* ══════════════════════════════════════════════════
    INICIAR GRUPO
    ══════════════════════════════════════════════════ */
-
-/* ══════════════════════════════════════════════════
-   GESTIÓN DE PROGRESO (localStorage por usuario+grupo)
-   ══════════════════════════════════════════════════ */
-function clavePorProgreso(key) {
-  return `odontoia_progreso_${usuarioActual}_${key}`;
-}
-function claveCompletado(key) {
-  return `odontoia_completado_${usuarioActual}_${key}`;
-}
-
-function guardarProgreso(key) {
-  try {
-    const data = {
-      indice, puntaje, historial, grupoActual, intentoInicio,
-      fecha: new Date().toISOString()
-    };
-    localStorage.setItem(clavePorProgreso(key), JSON.stringify(data));
-  } catch(e) { console.warn("No se pudo guardar progreso:", e); }
-}
-
-function cargarProgreso(key) {
-  try {
-    const raw = localStorage.getItem(clavePorProgreso(key));
-    return raw ? JSON.parse(raw) : null;
-  } catch(e) { return null; }
-}
-
-function borrarProgreso(key) {
-  try { localStorage.removeItem(clavePorProgreso(key)); } catch(e) {}
-}
-
-function guardarCompletado(key, puntaje, total, pct) {
-  try {
-    const data = { puntaje, total, pct, fecha: new Date().toLocaleString('es-CL') };
-    localStorage.setItem(claveCompletado(key), JSON.stringify(data));
-  } catch(e) {}
-}
-
-function cargarCompletado(key) {
-  try {
-    const raw = localStorage.getItem(claveCompletado(key));
-    return raw ? JSON.parse(raw) : null;
-  } catch(e) { return null; }
-}
-
-function actualizarEstadoSelector() {
-  ['grupo1', 'grupo2'].forEach(key => {
-    const el = document.getElementById('estado-' + key);
-    if (!el) return;
-    el.innerHTML = '';
-    const prog = cargarProgreso(key);
-    const comp = cargarCompletado(key);
-    if (prog) {
-      const total = BANCO[key].length;
-      el.innerHTML = `<span class="estado-progreso en-curso">📌 En curso: pregunta ${prog.indice + 1} de ${total}</span>`;
-    } else if (comp) {
-      el.innerHTML = `<span class="estado-progreso completo">✓ Completado: ${comp.puntaje}/${comp.total} (${comp.pct}%)</span>`;
-    }
-  });
-}
-
-function continuarProgreso() {
-  const prog = cargarProgreso(grupoKey);
-  if (!prog) { iniciarGrupoLimpio(grupoKey); return; }
-  grupoActual   = prog.grupoActual;
-  indice        = prog.indice;
-  puntaje       = prog.puntaje;
-  historial     = prog.historial;
-  intentoInicio = prog.intentoInicio || Date.now();
-  respondido    = false;
-  intentoNum++;
-  document.getElementById('chip-usuario').textContent = usuarioActual;
-  mostrarPantalla('pantalla-ejercicio');
-  renderEjercicio();
-}
-
-function empezarDeCero() {
-  borrarProgreso(grupoKey);
-  iniciarGrupoLimpio(grupoKey);
-}
-
-function iniciarGrupoLimpio(key) {
+function iniciarGrupo(key) {
   grupoKey      = key;
   grupoActual   = [...BANCO[key]].sort(() => Math.random() - .5);
   indice        = 0;
@@ -830,38 +797,10 @@ function iniciarGrupoLimpio(key) {
   respondido    = false;
   intentoNum++;
   intentoInicio = Date.now();
+
   document.getElementById('chip-usuario').textContent = usuarioActual;
   mostrarPantalla('pantalla-ejercicio');
   renderEjercicio();
-}
-
-function iniciarGrupo(key) {
-  grupoKey = key;
-  const prog = cargarProgreso(key);
-  const comp = cargarCompletado(key);
-
-  // Caso 1: tiene progreso guardado a medio camino
-  if (prog) {
-    const total = BANCO[key].length;
-    document.getElementById('continuar-titulo').textContent =
-      key === 'grupo1' ? 'Grupo 1 — Tienes un ejercicio en curso' : 'Grupo 2 — Tienes un ejercicio en curso';
-    document.getElementById('stat-pregunta').textContent  = prog.indice + 1;
-    document.getElementById('stat-correctas').textContent = prog.puntaje;
-    document.getElementById('stat-restantes').textContent = total - prog.indice;
-    mostrarPantalla('pantalla-continuar');
-    return;
-  }
-
-  // Caso 2: ya lo completó alguna vez
-  if (comp) {
-    document.getElementById('prev-puntaje').textContent = `${comp.puntaje}/${comp.total} (${comp.pct}%)`;
-    document.getElementById('prev-fecha').textContent   = `Última vez: ${comp.fecha}`;
-    mostrarPantalla('pantalla-completado-prev');
-    return;
-  }
-
-  // Caso 3: nunca lo ha hecho → empezar limpio
-  iniciarGrupoLimpio(key);
 }
 
 /* ══════════════════════════════════════════════════
@@ -990,21 +929,12 @@ function mostrarFeedback(esCorrecta, ej) {
    ══════════════════════════════════════════════════ */
 function siguienteEjercicio() {
   indice++;
-  if (indice < grupoActual.length) {
-    guardarProgreso(grupoKey);   // guarda en qué pregunta está ahora
-    renderEjercicio();
-  } else {
-    mostrarResultados();
-  }
+  indice < grupoActual.length ? renderEjercicio() : mostrarResultados();
 }
 
 function mostrarResultados() {
   const total = grupoActual.length;
   const pct   = Math.round((puntaje / total) * 100);
-
-  // Borrar progreso (terminó) y guardar resultado completado
-  borrarProgreso(grupoKey);
-  guardarCompletado(grupoKey, puntaje, total, pct);
 
   document.getElementById('res-icono').textContent  = pct >= 80 ? "🏆" : pct >= 50 ? "💪" : "📚";
   document.getElementById('res-titulo').textContent =
@@ -1054,8 +984,8 @@ function mostrarResultados() {
 /* ══════════════════════════════════════════════════
    REINICIAR / VOLVER / SALIR
    ══════════════════════════════════════════════════ */
-function reiniciar()      { iniciarGrupoLimpio(grupoKey); }
-function volverSelector() { actualizarEstadoSelector(); mostrarPantalla('pantalla-selector'); }
+function reiniciar()      { iniciarGrupo(grupoKey); }
+function volverSelector() { mostrarPantalla('pantalla-selector'); }
 function salir() {
   // Registrar cierre de sesión con duración total
   if (usuarioActual && sesionInicio) {
