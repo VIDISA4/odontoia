@@ -152,6 +152,45 @@
     .udd-badge { margin-top: 20px; font-size: 0.75rem; color: var(--texto-sub); text-align: center; }
     .pantalla        { display: none; }
     .pantalla.activa { display: block; }
+
+    /* Badge de estado de progreso */
+    .estado-progreso {
+      display: inline-flex; align-items: center; gap: 4px;
+      border-radius: 99px; padding: 2px 10px;
+      font-size: 0.72rem; font-weight: 700;
+      margin-top: 4px;
+    }
+    .estado-progreso.en-curso  { background: #fef3c7; color: var(--amarillo); }
+    .estado-progreso.completo  { background: #dcfce7; color: var(--verde); }
+
+    /* Pantalla de continuar */
+    .continuar-card { text-align: center; padding: 28px 24px; }
+    .continuar-icono { font-size: 3rem; margin-bottom: 12px; }
+    .continuar-titulo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.4rem; color: var(--azul); margin-bottom: 8px;
+    }
+    .continuar-desc { font-size: 0.92rem; color: var(--texto-sub); margin-bottom: 22px; line-height: 1.5; }
+    .continuar-stats {
+      background: var(--gris-bg); border-radius: 10px;
+      padding: 14px; margin-bottom: 22px;
+      display: flex; justify-content: space-around;
+    }
+    .stat-item { text-align: center; }
+    .stat-num { font-size: 1.6rem; font-weight: 700; color: var(--azul-claro); }
+    .stat-lbl { font-size: 0.72rem; color: var(--texto-sub); text-transform: uppercase; letter-spacing: .04em; }
+
+    /* Resultado anterior */
+    .resultado-prev-card {
+      background: #f0fdf4; border: 1.5px solid #86efac;
+      border-radius: 10px; padding: 14px; margin-bottom: 18px;
+      text-align: center;
+    }
+    .resultado-prev-card .num {
+      font-size: 1.8rem; font-weight: 700; color: var(--verde);
+    }
+    .resultado-prev-card .desc { font-size: 0.82rem; color: #166534; }
+
     @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
   </style>
 </head>
@@ -197,6 +236,7 @@
             <span class="pill pill-verde">Selección múltiple</span>
             <span class="pill pill-amari">Escritura</span>
           </div>
+          <div id="estado-grupo1"></div>
         </div>
       </div>
 
@@ -209,9 +249,67 @@
             <span class="pill pill-amari">6 ejercicios</span>
             <span class="pill pill-verde">Selección múltiple</span>
           </div>
+          <div id="estado-grupo2"></div>
         </div>
       </div>
 
+    </div>
+  </div>
+
+
+  <!-- ══════════ CONTINUAR / EMPEZAR DE 0 ══════════ -->
+  <div class="card pantalla" id="pantalla-continuar">
+    <div class="continuar-card">
+      <div class="continuar-icono">📌</div>
+      <div class="continuar-titulo" id="continuar-titulo">Tienes un ejercicio en curso</div>
+      <p class="continuar-desc">¿Quieres continuar donde lo dejaste o empezar de nuevo?</p>
+
+      <div class="continuar-stats">
+        <div class="stat-item">
+          <div class="stat-num" id="stat-pregunta">0</div>
+          <div class="stat-lbl">Pregunta</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="stat-correctas">0</div>
+          <div class="stat-lbl">Correctas</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="stat-restantes">0</div>
+          <div class="stat-lbl">Restantes</div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="continuarProgreso()" style="margin-bottom:10px">
+        ▶ Continuar donde quedé
+      </button>
+      <button class="btn-secondary" onclick="empezarDeCero()">
+        ↺ Empezar de cero
+      </button>
+
+      <div style="margin-top:14px">
+        <button class="btn-volver" onclick="volverSelector()">← Volver atrás</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ COMPLETADO PREVIAMENTE ══════════ -->
+  <div class="card pantalla" id="pantalla-completado-prev">
+    <div class="continuar-card">
+      <div class="continuar-icono">🏆</div>
+      <div class="continuar-titulo">¡Ya completaste este grupo!</div>
+      <p class="continuar-desc">Aquí está tu mejor resultado anterior:</p>
+
+      <div class="resultado-prev-card">
+        <div class="num" id="prev-puntaje">0/0</div>
+        <div class="desc" id="prev-fecha">Última vez: —</div>
+      </div>
+
+      <button class="btn-primary" onclick="empezarDeCero()" style="margin-bottom:10px">
+        🔄 Hacer de nuevo
+      </button>
+      <div style="margin-top:14px">
+        <button class="btn-volver" onclick="volverSelector()">← Volver atrás</button>
+      </div>
     </div>
   </div>
 
@@ -634,13 +732,96 @@ async function iniciarSesion() {
     evento:  "Inicio de sesión"
   });
 
+  actualizarEstadoSelector();
   mostrarPantalla('pantalla-selector');
 }
 
 /* ══════════════════════════════════════════════════
    INICIAR GRUPO
    ══════════════════════════════════════════════════ */
-function iniciarGrupo(key) {
+
+/* ══════════════════════════════════════════════════
+   GESTIÓN DE PROGRESO (localStorage por usuario+grupo)
+   ══════════════════════════════════════════════════ */
+function clavePorProgreso(key) {
+  return `odontoia_progreso_${usuarioActual}_${key}`;
+}
+function claveCompletado(key) {
+  return `odontoia_completado_${usuarioActual}_${key}`;
+}
+
+function guardarProgreso(key) {
+  try {
+    const data = {
+      indice, puntaje, historial, grupoActual, intentoInicio,
+      fecha: new Date().toISOString()
+    };
+    localStorage.setItem(clavePorProgreso(key), JSON.stringify(data));
+  } catch(e) { console.warn("No se pudo guardar progreso:", e); }
+}
+
+function cargarProgreso(key) {
+  try {
+    const raw = localStorage.getItem(clavePorProgreso(key));
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+function borrarProgreso(key) {
+  try { localStorage.removeItem(clavePorProgreso(key)); } catch(e) {}
+}
+
+function guardarCompletado(key, puntaje, total, pct) {
+  try {
+    const data = { puntaje, total, pct, fecha: new Date().toLocaleString('es-CL') };
+    localStorage.setItem(claveCompletado(key), JSON.stringify(data));
+  } catch(e) {}
+}
+
+function cargarCompletado(key) {
+  try {
+    const raw = localStorage.getItem(claveCompletado(key));
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+function actualizarEstadoSelector() {
+  ['grupo1', 'grupo2'].forEach(key => {
+    const el = document.getElementById('estado-' + key);
+    if (!el) return;
+    el.innerHTML = '';
+    const prog = cargarProgreso(key);
+    const comp = cargarCompletado(key);
+    if (prog) {
+      const total = BANCO[key].length;
+      el.innerHTML = `<span class="estado-progreso en-curso">📌 En curso: ${prog.indice}/${total}</span>`;
+    } else if (comp) {
+      el.innerHTML = `<span class="estado-progreso completo">✓ Completado: ${comp.puntaje}/${comp.total} (${comp.pct}%)</span>`;
+    }
+  });
+}
+
+function continuarProgreso() {
+  const prog = cargarProgreso(grupoKey);
+  if (!prog) { iniciarGrupoLimpio(grupoKey); return; }
+  grupoActual   = prog.grupoActual;
+  indice        = prog.indice;
+  puntaje       = prog.puntaje;
+  historial     = prog.historial;
+  intentoInicio = prog.intentoInicio || Date.now();
+  respondido    = false;
+  intentoNum++;
+  document.getElementById('chip-usuario').textContent = usuarioActual;
+  mostrarPantalla('pantalla-ejercicio');
+  renderEjercicio();
+}
+
+function empezarDeCero() {
+  borrarProgreso(grupoKey);
+  iniciarGrupoLimpio(grupoKey);
+}
+
+function iniciarGrupoLimpio(key) {
   grupoKey      = key;
   grupoActual   = [...BANCO[key]].sort(() => Math.random() - .5);
   indice        = 0;
@@ -649,10 +830,38 @@ function iniciarGrupo(key) {
   respondido    = false;
   intentoNum++;
   intentoInicio = Date.now();
-
   document.getElementById('chip-usuario').textContent = usuarioActual;
   mostrarPantalla('pantalla-ejercicio');
   renderEjercicio();
+}
+
+function iniciarGrupo(key) {
+  grupoKey = key;
+  const prog = cargarProgreso(key);
+  const comp = cargarCompletado(key);
+
+  // Caso 1: tiene progreso guardado a medio camino
+  if (prog) {
+    const total = BANCO[key].length;
+    document.getElementById('continuar-titulo').textContent =
+      key === 'grupo1' ? 'Grupo 1 — Tienes un ejercicio en curso' : 'Grupo 2 — Tienes un ejercicio en curso';
+    document.getElementById('stat-pregunta').textContent  = prog.indice + 1;
+    document.getElementById('stat-correctas').textContent = prog.puntaje;
+    document.getElementById('stat-restantes').textContent = total - prog.indice;
+    mostrarPantalla('pantalla-continuar');
+    return;
+  }
+
+  // Caso 2: ya lo completó alguna vez
+  if (comp) {
+    document.getElementById('prev-puntaje').textContent = `${comp.puntaje}/${comp.total} (${comp.pct}%)`;
+    document.getElementById('prev-fecha').textContent   = `Última vez: ${comp.fecha}`;
+    mostrarPantalla('pantalla-completado-prev');
+    return;
+  }
+
+  // Caso 3: nunca lo ha hecho → empezar limpio
+  iniciarGrupoLimpio(key);
 }
 
 /* ══════════════════════════════════════════════════
@@ -732,6 +941,7 @@ function responderSeleccion(seleccion, botonPresionado, ej) {
   });
 
   historial.push({ pregunta: `P${indice+1} (${ej.sistema})`, seleccion, correcta: ej.correcta, ok: esCorrecta });
+  guardarProgreso(grupoKey);
   mostrarFeedback(esCorrecta, ej);
 }
 
@@ -758,6 +968,7 @@ function verificarEscritura() {
   document.getElementById('btn-verificar').disabled = true;
 
   historial.push({ pregunta: `P${indice+1} (${ej.sistema})`, seleccion: resp, correcta: ej.correcta, ok: esCorrecta });
+  guardarProgreso(grupoKey);
   mostrarFeedback(esCorrecta, ej);
 }
 
@@ -787,6 +998,10 @@ function siguienteEjercicio() {
 function mostrarResultados() {
   const total = grupoActual.length;
   const pct   = Math.round((puntaje / total) * 100);
+
+  // Borrar progreso (terminó) y guardar resultado completado
+  borrarProgreso(grupoKey);
+  guardarCompletado(grupoKey, puntaje, total, pct);
 
   document.getElementById('res-icono').textContent  = pct >= 80 ? "🏆" : pct >= 50 ? "💪" : "📚";
   document.getElementById('res-titulo').textContent =
@@ -836,8 +1051,8 @@ function mostrarResultados() {
 /* ══════════════════════════════════════════════════
    REINICIAR / VOLVER / SALIR
    ══════════════════════════════════════════════════ */
-function reiniciar()      { iniciarGrupo(grupoKey); }
-function volverSelector() { mostrarPantalla('pantalla-selector'); }
+function reiniciar()      { iniciarGrupoLimpio(grupoKey); }
+function volverSelector() { actualizarEstadoSelector(); mostrarPantalla('pantalla-selector'); }
 function salir() {
   // Registrar cierre de sesión con duración total
   if (usuarioActual && sesionInicio) {
